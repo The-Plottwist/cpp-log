@@ -1,6 +1,6 @@
 # cpp-log
 ### Description:
-Single file logging library for c++. (Available opreating systems are Linux, Windows)
+Single file logging library for c++. (Available opreating systems are Linux and Windows)
 
 ### Why:
 
