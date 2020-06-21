@@ -16,7 +16,7 @@ What i give you is that a single header file. Which only uses standard c++ libra
 Log lg{"Experiment.log", "LOG", "warning", "debug"};
 ```
   * First argument: Name of the log file.
-  * Second argument: Path or directory you want to make.
+  * Second argument: Path or directory name.
   * Third argument: Console level. (The logging level that you want to print to the console.)
   * Fourth and last argument: File level. (The logging level that you want to write to the file.)
 ### Second, use that object to execute functions:
