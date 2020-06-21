@@ -5,7 +5,7 @@ Single file logging library for c++. (Available opreating systems are Linux and 
 ### Why:
 
 I don't like complicated solutions for simple tasks.
-Whenever i looked for logging libraries for c++ i found complicated multi-file libraries.
+Whenever i look for logging libraries for c++ i found complicated multi-file libraries.
 For me its a preference.
 You can always clone an 'a library'. It's all up to you.
 What i give you is that a single header file. Which only uses standard c++ library.
