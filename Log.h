@@ -2,7 +2,7 @@
 
 /*
 <For logging in c++. "Log.h" header file.>
-    Copyright (C) <2020>  <The_Plottwist,The-Plottwist>
+    Copyright (C) <2020>  <The_Plottwist>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
