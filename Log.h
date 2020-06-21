@@ -1,8 +1,26 @@
 //BISMILLAH
 
+/*
+<For logging in c++. "Log.h" header file.>
+    Copyright (C) <2020>  <The_Plottwist,The-Plottwist>
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+//USAGE:
 //To use this library first define a global variable.
-//Usage: Log lg{"FILE_NAME.log", "DIR_NAME or PATH", "CONSOLE_LEVEL", "FILE_LEVEL"};
+//Log lg{"FILE_NAME.log", "DIR_NAME or PATH", "CONSOLE_LEVEL", "FILE_LEVEL"};
 
 //You can only access the commands with that variable.
 //Available commands: lg.debug("message", variable *OPTIONAL, variable *OPTIONAL), lg.info(...), lg.error(...), lg.warning(...) and lg.critical(...)
