@@ -93,7 +93,6 @@ class Log {
     std::string File_Name;
     LOG_LEVELS file_level;
     LOG_LEVELS console_level;
-    std::ofstream File;
 
     //time
     std::time_t rawtime;
@@ -113,7 +112,7 @@ class Log {
 public:
 
     Log (std::string fname, std::string pth, std::string cn_lvl, std::string fl_lvl)
-    :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()), File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app) {
+    :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()) {
 
         set_path(pth);
         set_file(fname);
@@ -241,6 +240,7 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << std::endl;
         }
+        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -325,6 +325,7 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << variable << std::endl;
         }
+        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -409,6 +410,7 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << variable << ", " << variable2 << std::endl;
         }
+        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
