@@ -39,7 +39,7 @@ Last two arguments are optional and also you can send in other types like int, b
 
 # Example program:
 ```c++
-#include "Log.h"
+#include "cpp-log/Log.h"
 
 Log lg{"Experiment.log", "LOG", "warning", "debug"};
 
