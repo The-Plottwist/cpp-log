@@ -36,6 +36,7 @@ lg.get_file_name();
 //Example program:
 
 //#include <iostream>
+//#include "cpp-log/Log.h"
 //Log lg{"Experiment.log", "LOG", "warning", "info"};
 
 //...
