@@ -27,6 +27,8 @@ lg.info("");
 lg.error("");
 lg.warning("");
 lg.critical("");
+lg.get_path();
+lg.get_file_name();
 ```
 All functions can take three arguments.
 * string.
