@@ -20,15 +20,13 @@ Log lg{"Experiment.log", "LOG", "warning", "debug"}; //This usage of paranthesis
   * Third argument: Console level. (The logging level that you want to print to the console.)
   * Fourth and last argument: File level. (The logging level that you want to write to the file.)
 ### Second, use that object to execute functions:
-Available functions are:
+Available logging functions are:
 ```c++
 lg.debug("");
 lg.info("");
 lg.error("");
 lg.warning("");
 lg.critical("");
-lg.get_path();
-lg.get_file_name();
 ```
 All functions can take three arguments.
 * string.
@@ -36,6 +34,13 @@ All functions can take three arguments.
 * double.
 
 Last two arguments are optional and also you can send in other types like int, bool or float.
+
+### Other functions:
+```c++
+lg.get_path();
+lg.get_file_name();
+```
+These two as you can guess by their name gives you the name and the directory/path of the file.
 
 # Example program:
 ```c++
