@@ -19,11 +19,19 @@
 */
 
 //USAGE:
-//To use this library first define a global variable.
+//To use this library you must first define a global variable.
 //Log lg{"FILE_NAME.log", "DIR_NAME or PATH", "CONSOLE_LEVEL", "FILE_LEVEL"};
 
 //You can only access the commands with that variable.
-//Available commands: lg.debug("message", variable *OPTIONAL, variable *OPTIONAL), lg.info(...), lg.error(...), lg.warning(...) and lg.critical(...)
+//Available commands: 
+/*
+lg.debug("message", variable *OPTIONAL, variable *OPTIONAL),
+lg.info(...),
+lg.error(...),
+lg.warning(...)
+lg.critical(...)
+lg.get_path();
+lg.get_file_name();
 
 //Example program:
 
@@ -83,6 +91,7 @@ class Log {
     std::string File_Name;
     LOG_LEVELS file_level;
     LOG_LEVELS console_level;
+    std::ofstream File;
 
     //time
     std::time_t rawtime;
@@ -102,7 +111,7 @@ class Log {
 public:
 
     Log (std::string fname, std::string pth, std::string cn_lvl, std::string fl_lvl)
-    :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()) {
+    :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()), File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app) {
 
         set_path(pth);
         set_file(fname);
@@ -230,7 +239,6 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << std::endl;
         }
-        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -315,7 +323,6 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << variable << std::endl;
         }
-        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -400,7 +407,6 @@ public:
             std::cout << " :" << level << ": ";
             std::cout << message << variable << ", " << variable2 << std::endl;
         }
-        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -424,12 +430,6 @@ public:
         }
     }
     ~Log () {
-
-        //No need for destructing variables.
-        //The reason is that they are at the stack.
-        //And when they out of scope they will be discarded.
-        //Only use "delete" on dynamically allocated variables. Ex. int *var = new int;
-        //No need for deleting rawdate (because it equals to '&var' i.e data segmentg)
 
         //closing the file
         std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
