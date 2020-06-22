@@ -13,7 +13,7 @@ What i give you is that a single header file. Which only uses standard c++ libra
 # Usage:
 ### First, declare a global object:
 ```c++
-Log lg{"Experiment.log", "LOG", "warning", "debug"}; //Use normal paranthesis for C++ 98
+Log lg{"Experiment.log", "LOG", "warning", "debug"}; //This usage of paranthesis encouraged from C++ 11 and on
 ```
   * First argument: Name of the log file.
   * Second argument: Path or directory name.
