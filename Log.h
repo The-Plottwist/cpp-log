@@ -32,6 +32,7 @@ lg.warning(...)
 lg.critical(...)
 lg.get_path();
 lg.get_file_name();
+*/
 
 //Example program:
 
