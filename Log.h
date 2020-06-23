@@ -85,7 +85,8 @@ class Log {
         INFO,
         ERROR,
         WARNING,
-        CRITICAL
+        CRITICAL,
+        DISABLED = 999
     };
 
     //file
@@ -140,6 +141,8 @@ public:
             file_level = WARNING;
         if (fl_lvl == "critical")
             file_level = CRITICAL;
+        if (fl_lvl == "disabled")
+            file_level = DISABLED;
     }
     void set_cn_lvl(const std::string &cn_lvl) {
 
@@ -153,6 +156,8 @@ public:
             console_level = WARNING;
         if (cn_lvl == "critical")
             console_level = CRITICAL;
+        if (cn_lvl == "disabled")
+            console_level = DISABLED;
     }
     std::string get_path() const { return Path; }
     std::string get_file_name() const { return File_Name; }
