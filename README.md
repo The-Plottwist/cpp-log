@@ -10,44 +10,35 @@ For me its a preference.
 You can always clone an 'a library'. It's all up to you.
 What i give you is that a single header file. Which only uses standard c++ library.
 
-# Usage:
-### First, declare a global object:
+# Syntax:
 ```c++
-Log lg{"Experiment.log", "LOG", "warning", "debug"}; //This usage of paranthesis encouraged from C++ 11 and on
+//Usage of curly paranthesis on initialization encouraged for C++ 11 and onwards.
+Log lg{FİLE_NAME, DIR_NAME/PATH, CONSOLE_LEVEL, FILE_LEVEL};
 ```
-  * First argument: Name of the log file.
-  * Second argument: Path or directory name.
-  * Third argument: Console level. (The logging level that you want to print to the console.)
-  * Fourth and last argument: File level. (The logging level that you want to write to the file.)
-    * The logging levels are {debug, info, error, warning, critical and disabled}
-### Second, use that object to execute functions:
-Available logging functions are:
+
+### Available functions:
 ```c++
+lg.path();
+lg.file_name();
+
 lg.debug("");
 lg.info("");
 lg.error("");
 lg.warning("");
 lg.critical("");
 ```
-All of the above functions can take three arguments.
+Other than the first two all of the above functions can take three arguments.
 * string.
-* double.
-* double.
+* int, bool, float or double.
+* int, bool, float or double.
 
-Last two arguments are optional and also you can send in other types like int, bool or float.
-
-### Other functions:
-```c++
-lg.get_path();
-lg.get_file_name();
-```
-These two as you can guess by their name gives you the name and the directory/path of the file.
+Last two are optional.   
 
 # Example program:
 ```c++
 #include "cpp-log/Log.h"
 
-Log lg{"Experiment.log", "LOG", "warning", "debug"};
+Log lg{"Experiment.log", "LOG", LEVEL::WARNING, LEVEL::DEBUG};
 
 int main () {
 
@@ -56,21 +47,21 @@ int main () {
   
   lg.debug("This message won't appear in console but will appear in the log file");
   lg.warning("This message will appear both in the console and in the log file");
-  lg.critical("The x, y coordinates are: ", x, y);
+  lg.critical("Same as above with higher priority and has variables: ", x, y);
   return 0;
  }
 ```
-### In console this will result with:
+### In console this will possibly result with:
 ```console
 [21-06-2020] [15:47:44] 0ms :WARNING: This message will appear both in the console and in the log file
-[21-06-2020] [15:47:44] 0ms :CRITICAL: The x, y coordinates are: -123, 521
+[21-06-2020] [15:47:44] 0ms :CRITICAL: Same as above with higher priority and has variables: -123, 521
 ```
-### In log file this will result with:
+### In log file this will possibly result with:
 ```
 [21-06-2020] [15:47:44] 0ms :DEBUG: This message won't appear in console but will appear in the log file
 [21-06-2020] [15:47:44] 0ms :WARNING: This message will appear both in the console and in the log file
-[21-06-2020] [15:47:44] 0ms :CRITICAL: The x, y coordinates are: -123, 521
+[21-06-2020] [15:47:44] 0ms :CRITICAL: Same as above with higher priority and has variables: -123, 521
 ```
 # Contribution:
 All contributions, suggestions, tips etc. are welcomed.
-With an exception. I do this as a hobby and i am a University student. So i can't guarantee you about responding to your feedbacks. But fell free to contact me.
+With an exception. I do this as a hobby and i am a University student. So i can't guarantee you about responding to your feedbacks. But feel free to contact me.
