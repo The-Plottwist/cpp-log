@@ -20,7 +20,7 @@
 
 //USAGE:
 //To use this library you must first define a global variable.
-//Log lg{"FILE_NAME.log", "DIR_NAME or PATH", "CONSOLE_LEVEL", "FILE_LEVEL"};
+//Log lg{"FILE_NAME.log", "DIR_NAME or PATH", CONSOLE_LEVEL, FILE_LEVEL};
 
 //You can only access the commands with that variable.
 //Available commands: 
@@ -38,7 +38,7 @@ lg.get_file_name();
 
 //#include <iostream>
 //#include "cpp-log/Log.h"
-//Log lg{"Experiment.log", "LOG", WARNING, INFO};
+//Log lg{"Experiment.log", "LOG", LEVEL::WARNING, LEVEL::INFO};
 
 //...
 
