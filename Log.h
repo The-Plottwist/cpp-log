@@ -1,8 +1,9 @@
 //BISMILLAH
 
-/*
-<For logging in c++. "Log.h" header file.>
-    Copyright (C) <2020>  <The_Plottwist>
+/* -------------------------------- COPYRIGHT -------------------------------
+
+    <C++ Logging library>
+    Copyright (C) <2020>  <Fatih Yeğin>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +17,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+
+-------------------------------------------------------------------------- */
 
 //USAGE:
 //To use this library you must first define a global variable.
