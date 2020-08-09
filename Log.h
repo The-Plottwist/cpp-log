@@ -38,14 +38,14 @@ lg.get_file_name();
 
 //#include <iostream>
 //#include "cpp-log/Log.h"
-//Log lg{"Experiment.log", "LOG", "warning", "info"};
+//Log lg{"Experiment.log", "LOG", WARNING, INFO};
 
 //...
 
 //int main () {
 //  int some_var = 5;
-//  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
-//  lg.critical("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
+//  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log" file.")
+//  lg.critical("This message will be printed to console and will be written to the \"LOG/Experiment.log" file.");
 //  lg.critical("some_var equals: ", some_var);
 //  return 0;
 //}
@@ -69,6 +69,9 @@ lg.get_file_name();
 #include <iostream>
 #include <string>
 
+//file error
+#include <cassert>
+
 //write file
 #include <fstream>
 
@@ -76,24 +79,24 @@ lg.get_file_name();
 #include <chrono>
 #include <ctime>
 
+enum LEVEL {
+
+    DEBUG,
+    INFO,
+    ERROR,
+    WARNING,
+    CRITICAL,
+    DISABLED = 999
+};
 
 class Log {
 
-    enum LOG_LEVELS {
-
-        DEBUG,
-        INFO,
-        ERROR,
-        WARNING,
-        CRITICAL,
-        DISABLED = 999
-    };
 
     //file
     std::string Path;
     std::string File_Name;
-    LOG_LEVELS file_level;
-    LOG_LEVELS console_level;
+    LEVEL file_level;
+    LEVEL console_level;
 
     //time
     std::time_t rawtime;
@@ -112,7 +115,7 @@ class Log {
 
 public:
 
-    Log (std::string fname, std::string pth, std::string cn_lvl, std::string fl_lvl)
+    Log (std::string fname, std::string pth, LEVEL cn_lvl, LEVEL fl_lvl)
     :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()) {
 
         set_path(pth);
@@ -121,46 +124,19 @@ public:
         set_cn_lvl(cn_lvl);
 
         //clear/make log
-        std::ofstream clear(Path + FOLDER_SEPERATOR + File_Name);
-        clear << "";
+        std::ofstream clear(Path + FOLDER_SEPERATOR + File_Name, std::ios::trunc);
         clear.close();
     }
 
     //File
     void set_path(const std::string &pth) { Path = pth; }
     void set_file(const std::string &fname) { File_Name = fname; }
-    void set_fl_lvl(const std::string &fl_lvl) {
+    
+    void set_fl_lvl(const LEVEL &fl_lvl) { file_level = fl_lvl; }
+    void set_cn_lvl(const LEVEL &cn_lvl) { console_level = cn_lvl; }
 
-        if (fl_lvl == "debug")
-            file_level = DEBUG;
-        if (fl_lvl == "info")
-            file_level = INFO;
-        if (fl_lvl == "error")
-            file_level = ERROR;
-        if (fl_lvl == "warning")
-            file_level = WARNING;
-        if (fl_lvl == "critical")
-            file_level = CRITICAL;
-        if (fl_lvl == "disabled")
-            file_level = DISABLED;
-    }
-    void set_cn_lvl(const std::string &cn_lvl) {
-
-        if (cn_lvl == "debug")
-            console_level = DEBUG;
-        if (cn_lvl == "info")
-            console_level = INFO;
-        if (cn_lvl == "error")
-            console_level = ERROR;
-        if (cn_lvl == "warning")
-            console_level = WARNING;
-        if (cn_lvl == "critical")
-            console_level = CRITICAL;
-        if (cn_lvl == "disabled")
-            console_level = DISABLED;
-    }
-    std::string get_path() const { return Path; }
-    std::string get_file_name() const { return File_Name; }
+    std::string path() const { return Path; }
+    std::string file_name() const { return File_Name; }
 
     //Log functions
     void debug(const std::string &message) { Write_LOG(DEBUG, message); }
@@ -183,7 +159,8 @@ public:
     void critical(const std::string &message, const double &variable) { Write_LOG(CRITICAL, message, variable); }
     void critical(const std::string &message, const double &variable, const double &variable2) { Write_LOG(CRITICAL, message, variable, variable2); }
 
-    void Write_LOG(const LOG_LEVELS &lg_lvl, const std::string &message) {
+    //FOr writing the level
+    void Write_LOG(const LEVEL &lg_lvl, const std::string &message) {
 
         std::string level = "";
         switch (lg_lvl) {
@@ -246,6 +223,8 @@ public:
             std::cout << message << std::endl;
         }
         std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
+        
+        assert((File.is_open()) && "Log file couldn't opened.");
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -267,8 +246,9 @@ public:
             File << " :" << level << ": ";
             File << message << std::endl;
         }
+        File.close();
     }
-    void Write_LOG(const LOG_LEVELS &lg_lvl, const std::string &message, const double &variable) {
+    void Write_LOG(const LEVEL &lg_lvl, const std::string &message, const double &variable) {
 
         std::string level = "";
         switch (lg_lvl) {
@@ -331,6 +311,8 @@ public:
             std::cout << message << variable << std::endl;
         }
         std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
+        
+        assert((File.is_open()) && "Log file couldn't opened.");
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -352,8 +334,9 @@ public:
             File << " :" << level << ": ";
             File << message << variable << std::endl;
         }
+        File.close();
     }
-    void Write_LOG(const LOG_LEVELS &lg_lvl, const std::string &message, const double &variable, const double &variable2) {
+    void Write_LOG(const LEVEL &lg_lvl, const std::string &message, const double &variable, const double &variable2) {
 
         std::string level = "";
         switch (lg_lvl) {
@@ -416,6 +399,8 @@ public:
             std::cout << message << variable << ", " << variable2 << std::endl;
         }
         std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
+        
+        assert((File.is_open()) && "Log file couldn't opened.");
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -437,15 +422,8 @@ public:
             File << " :" << level << ": ";
             File << message << variable << ", " << variable2 << std::endl;
         }
-    }
-    ~Log () {
-
-        //closing the file
-        std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         File.close();
     }
-
-
 };
 
 #endif
