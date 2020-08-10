@@ -21,13 +21,15 @@
 -------------------------------------------------------------------------- */
 
 //USAGE:
-//To use this library you must first define a global variable.
+//Define a global object:
 //Log lg{"FILE_NAME.log", "DIR_NAME or PATH", CONSOLE_LEVEL, FILE_LEVEL};
 
-//You can only access the commands with that variable.
-//Available commands: 
+//Use that object for logging.
+
+//Available commands are:
+
 /*
-lg.debug("message", variable *OPTIONAL, variable *OPTIONAL),
+lg.debug("message", variable OPTIONAL, variable OPTIONAL),
 lg.info(...),
 lg.error(...),
 lg.warning(...)
@@ -46,8 +48,8 @@ lg.get_file_name();
 
 //int main () {
 //  int some_var = 5;
-//  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log" file.")
-//  lg.critical("This message will be printed to console and will be written to the \"LOG/Experiment.log" file.");
+//  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
+//  lg.warning("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
 //  lg.critical("some_var equals: ", some_var);
 //  return 0;
 //}
