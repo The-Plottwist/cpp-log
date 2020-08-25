@@ -53,10 +53,14 @@ Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::INFO};
 ...
 
 int main () {
-  int some_var = 5;
+  int some_var {5};
+  bool some_other_var{false};
+  
   lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
   lg.warning("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
   lg.critical("some_var equals: ", some_var);
+  lg.critical("some_var equals: ", some_other_var);
+  
   return 0;
 } */
 
