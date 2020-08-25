@@ -29,7 +29,7 @@
 //Available commands are:
 
 /*
-debug("message", variable OPTIONAL, variable OPTIONAL),
+debug("message", variable OPTIONAL),
 info(...),
 error(...),
 warning(...)
