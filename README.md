@@ -76,14 +76,14 @@ int main () {
 
   lg.debug("This message won't appear in console but will appear in the log file");
   lg.warning("This message will appear both in the console and in the log file");
-  
+
   lg.critical("The X: ", x);
   lg.critical("The Y: ", y);
-  
+
   //OR
-  
+
   lg.critical("The X: " + std::to_string(x) + ", The Y: ", y);
-  
+
   return 0;
  }
 ```
@@ -134,10 +134,10 @@ int main () {
     float f{1098.688};
 
     std::thread threads[5];
-    
+
     for (auto &th : threads) th = std::thread(test, f);
     for (auto &th : threads) th.join();
-  
+
     return 0;
  }
 ```
@@ -188,8 +188,6 @@ int main () {
 [25-08-2020] [19:58:22] 2ms :WARNING: Float: 1098.69
 [25-08-2020] [19:58:22] 2ms :CRITICAL: Float: 1098.69
 ```
-
-
 
 # Contribution:
 
