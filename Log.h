@@ -2,7 +2,7 @@
 
 /* -------------------------------- COPYRIGHT -------------------------------
 
-    <C++ Logging library>
+    <C++ Thread safe Logging library>
     Copyright (C) <2020>  <Fatih Yeğin>
 
     This program is free software: you can redistribute it and/or modify
@@ -29,35 +29,36 @@
 //Available commands are:
 
 /*
-lg.debug("message", variable OPTIONAL, variable OPTIONAL),
-lg.info(...),
-lg.error(...),
-lg.warning(...)
-lg.critical(...)
+debug("message", variable OPTIONAL, variable OPTIONAL),
+info(...),
+error(...),
+warning(...)
+critical(...)
 
 
-lg.set_path("some string");
-lg.set_file_name("...");
+set_path("some string");
+set_file_name("...");
 
-lg.get_path();      //returns std::stirng
-lg.get_file_name(); //returns std::stirng
+get_path();      //returns std::stirng
+get_file_name(); //returns std::stirng
 */
 
 //Example program:
 
-//#include <iostream>
-//#include "cpp-log/Log.h"
-//Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::INFO};
+/*
+#//include <iostream>
+#//include "cpp-log/Log.h"
+Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::INFO};
 
-//...
+...
 
-//int main () {
-//  int some_var = 5;
-//  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
-//  lg.warning("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
-//  lg.critical("some_var equals: ", some_var);
-//  return 0;
-//}
+int main () {
+  int some_var = 5;
+  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
+  lg.warning("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
+  lg.critical("some_var equals: ", some_var);
+  return 0;
+} */
 
 
 #ifndef Log_H
@@ -74,9 +75,19 @@ lg.get_file_name(); //returns std::stirng
 #define MAKE_DIRECTORY mkdir(Path.c_str(),0777);
 #endif
 
+/* --------------------- CHECK IF THREAD HEADER INCLUDED -------------------- */
+#ifdef _GLIBCXX_THREAD
+#define THREAD_SAFE_LOCK write.lock();
+#define THREAD_SAFE_UNLOCK write.unlock();
+#else
+#define THREAD_SAFE_LOCK 
+#define THREAD_SAFE_UNLOCK 
+#endif
 
 #include <iostream>
 #include <string>
+
+#include <mutex>
 
 //file error
 #include <cassert>
@@ -107,15 +118,20 @@ private:
 
     enum VAR_TYPE {
     
+        BOOL,
         CHAR,
         INT,
         LONG_INT,
+        LONG_LONG_INT,
         UNSIGNED_INT,
-        UNSIGNED_LONG_INT,
+        LONG_UNSIGNED_INT,
+        LONG_LONG_UNSIGNED_INT,
         FLOAT,
         DOUBLE,
         LONG_DOUBLE
     };
+
+    std::mutex write;
 
     std::string Path;
     std::string File_Name;
@@ -140,12 +156,17 @@ private:
     
 /* -------------------------------- VARIABLES ------------------------------- */
 
+    bool *bool_;
+
     char *char_;
 
     int *int_;
     long int *li;
+    long long int *lli;
+    
     unsigned int *ui;
-    unsigned long int *lui;
+    long unsigned int *lui;
+    long long unsigned int *llui;
     
     float *float_;
 
@@ -156,9 +177,9 @@ private:
     
 public:
 
-    Log (std::string fname, std::string pth, LEVEL cn_lvl, LEVEL fl_lvl)
+    Log (const std::string &fname, const std::string &pth, const LEVEL cn_lvl, const LEVEL fl_lvl)
     :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()),
-    char_{nullptr}, int_{nullptr}, li{nullptr}, ui{nullptr}, lui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
+    bool_{nullptr}, char_{nullptr}, int_{nullptr}, li{nullptr}, lli{nullptr}, ui{nullptr}, lui{nullptr}, llui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
 
         set_path(pth);
         set_file_name(fname);
@@ -172,11 +193,14 @@ public:
 
     ~Log () {
         
+        delete bool_;
         delete char_;
         delete int_;
         delete li;
+        delete lli;
         delete ui;
         delete lui;
+        delete llui;
         delete float_;
         delete double_;
         delete ld;
@@ -203,28 +227,45 @@ public:
 
     /* ---------------------------------- DEBUG --------------------------------- */
 
-    void debug(const std::string &message) { Write_LOG(LEVEL::DEBUG, message); }
+    void debug(const std::string &message) {
     
-
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::DEBUG, message);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    /* ---------------------------------- BOOL ---------------------------------- */
+    void debug(const std::string &message, const bool variable) {
+        
+        if (bool_ == nullptr) bool_ = new bool;
+        *bool_ = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
+        THREAD_SAFE_UNLOCK
+    }
+    
     /* ---------------------------------- CHAR ---------------------------------- */
-
     void debug(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
+        THREAD_SAFE_UNLOCK
     }
     
 
-    /* ----------------------------------- INT ---------------------------------- */
 
-    void debug(const std::string &message, const int &variable) {
+    void debug(const std::string &message, const int variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void debug(const std::string &message, const long int &variable) {
@@ -232,7 +273,19 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void debug(const std::string &message, const long long int &variable) {
+        
+        if (lli == nullptr) lli = new long long int;
+        *lli = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void debug(const std::string &message, const unsigned int &variable) {
@@ -240,37 +293,53 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
-    void debug(const std::string &message, const unsigned long int &variable) {
+    void debug(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new unsigned long int;
+        if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_LONG_INT);
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void debug(const std::string &message, const long long unsigned int &variable) {
+        
+        if (llui == nullptr) llui = new long long unsigned int;
+        *llui = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ---------------------------------- FLOAT --------------------------------- */
-
     void debug(const std::string &message, const float &variable) {
         
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- DOUBLE --------------------------------- */
-
     void debug(const std::string &message, const double &variable) {
         
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
     void debug(const std::string &message, const long double &variable) {
@@ -278,7 +347,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -287,28 +358,45 @@ public:
 
     /* ---------------------------------- INFO ---------------------------------- */
 
-    void info(const std::string &message) { Write_LOG(LEVEL::INFO, message); }
+    void info(const std::string &message) {
     
-
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::INFO, message);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    /* ---------------------------------- BOOL ---------------------------------- */
+    void info(const std::string &message, const bool variable) {
+        
+        if (bool_ == nullptr) bool_ = new bool;
+        *bool_ = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::BOOL);
+        THREAD_SAFE_UNLOCK
+    }
+    
     /* ---------------------------------- CHAR ---------------------------------- */
-
     void info(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::CHAR);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ----------------------------------- INT ---------------------------------- */
-
-    void info(const std::string &message, const int &variable) {
+    void info(const std::string &message, const int variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void info(const std::string &message, const long int &variable) {
@@ -316,7 +404,19 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void info(const std::string &message, const long long int &variable) {
+        
+        if (lli == nullptr) lli = new long long int;
+        *lli = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void info(const std::string &message, const unsigned int &variable) {
@@ -324,37 +424,53 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
-    void info(const std::string &message, const unsigned long int &variable) {
+    void info(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new unsigned long int;
+        if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_LONG_INT);
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void info(const std::string &message, const long long unsigned int &variable) {
+        
+        if (llui == nullptr) llui = new long long unsigned int;
+        *llui = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ---------------------------------- FLOAT --------------------------------- */
-
     void info(const std::string &message, const float &variable) {
         
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::FLOAT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- DOUBLE --------------------------------- */
-
     void info(const std::string &message, const double &variable) {
         
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
     void info(const std::string &message, const long double &variable) {
@@ -362,7 +478,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -371,28 +489,45 @@ public:
 
     /* ---------------------------------- ERROR --------------------------------- */
     
-    void error(const std::string &message) { Write_LOG(LEVEL::ERROR, message); }
+    void error(const std::string &message) {
     
-
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::ERROR, message);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    /* ---------------------------------- BOOL ---------------------------------- */
+    void error(const std::string &message, const bool variable) {
+        
+        if (bool_ == nullptr) bool_ = new bool;
+        *bool_ = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::BOOL);
+        THREAD_SAFE_UNLOCK
+    }
+    
     /* ---------------------------------- CHAR ---------------------------------- */
-
     void error(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::CHAR);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ----------------------------------- INT ---------------------------------- */
-
-    void error(const std::string &message, const int &variable) {
+    void error(const std::string &message, const int variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void error(const std::string &message, const long int &variable) {
@@ -400,7 +535,19 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void error(const std::string &message, const long long int &variable) {
+        
+        if (lli == nullptr) lli = new long long int;
+        *lli = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void error(const std::string &message, const unsigned int &variable) {
@@ -408,26 +555,41 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
-    void error(const std::string &message, const unsigned long int &variable) {
+    void error(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new unsigned long int;
+        if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_LONG_INT);
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void error(const std::string &message, const long long unsigned int &variable) {
+        
+        if (llui == nullptr) llui = new long long unsigned int;
+        *llui = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- FLOAT --------------------------------- */
-
     void error(const std::string &message, const float &variable) {
         
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -438,7 +600,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
     void error(const std::string &message, const long double &variable) {
@@ -446,7 +610,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -455,28 +621,45 @@ public:
 
     /* --------------------------------- WARNING -------------------------------- */
     
-    void warning(const std::string &message) { Write_LOG(LEVEL::WARNING, message); }
+    void warning(const std::string &message) {
     
-
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::WARNING, message);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    /* ---------------------------------- BOOL ---------------------------------- */
+    void warning(const std::string &message, const bool variable) {
+        
+        if (bool_ == nullptr) bool_ = new bool;
+        *bool_ = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::BOOL);
+        THREAD_SAFE_UNLOCK
+    }
+    
     /* ---------------------------------- CHAR ---------------------------------- */
-
     void warning(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::CHAR);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ----------------------------------- INT ---------------------------------- */
-
-    void warning(const std::string &message, const int &variable) {
+    void warning(const std::string &message, const int variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void warning(const std::string &message, const long int &variable) {
@@ -484,7 +667,19 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void warning(const std::string &message, const long long int &variable) {
+        
+        if (lli == nullptr) lli = new long long int;
+        *lli = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void warning(const std::string &message, const unsigned int &variable) {
@@ -492,37 +687,53 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
-    void warning(const std::string &message, const unsigned long int &variable) {
+    void warning(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new unsigned long int;
+        if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_LONG_INT);
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void warning(const std::string &message, const long long unsigned int &variable) {
+        
+        if (llui == nullptr) llui = new long long unsigned int;
+        *llui = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- FLOAT --------------------------------- */
-
     void warning(const std::string &message, const float &variable) {
         
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- DOUBLE --------------------------------- */
-
     void warning(const std::string &message, const double &variable) {
         
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
     void warning(const std::string &message, const long double &variable) {
@@ -530,7 +741,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -539,28 +752,45 @@ public:
     
     /* -------------------------------- CRITICAL -------------------------------- */
     
-    void critical(const std::string &message) { Write_LOG(LEVEL::CRITICAL, message); }
+    void critical(const std::string &message) {
     
-
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::CRITICAL, message);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    /* ---------------------------------- BOOL ---------------------------------- */
+    void critical(const std::string &message, const bool variable) {
+        
+        if (bool_ == nullptr) bool_ = new bool;
+        *bool_ = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
+        THREAD_SAFE_UNLOCK
+    }
+    
     /* ---------------------------------- CHAR ---------------------------------- */
-
     void critical(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* ----------------------------------- INT ---------------------------------- */
-
-    void critical(const std::string &message, const int &variable) {
+    void critical(const std::string &message, const int variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void critical(const std::string &message, const long int &variable) {
@@ -568,7 +798,19 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void critical(const std::string &message, const long long int &variable) {
+        
+        if (lli == nullptr) lli = new long long int;
+        *lli = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
+        THREAD_SAFE_UNLOCK
     }
     
     void critical(const std::string &message, const unsigned int &variable) {
@@ -576,37 +818,53 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
-    void critical(const std::string &message, const unsigned long int &variable) {
+    void critical(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new unsigned long int;
+        if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_LONG_INT);
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
+    }
+    
+    void critical(const std::string &message, const long long unsigned int &variable) {
+        
+        if (llui == nullptr) llui = new long long unsigned int;
+        *llui = variable;
+        
+        THREAD_SAFE_LOCK
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- FLOAT --------------------------------- */
-
     void critical(const std::string &message, const float &variable) {
         
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
+        THREAD_SAFE_UNLOCK
     }
     
 
     /* --------------------------------- DOUBLE --------------------------------- */
-
     void critical(const std::string &message, const double &variable) {
         
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
     void critical(const std::string &message, const long double &variable) {
@@ -614,7 +872,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
+        THREAD_SAFE_LOCK
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
+        THREAD_SAFE_UNLOCK
     }
     
 
@@ -790,6 +1050,11 @@ public:
             
             switch (type_) {
         
+                case BOOL:
+                    if (*bool_) std::cout << "TRUE";
+                    else std::cout << "FALSE";
+                    break;
+                
                 case CHAR:
                     std::cout << *char_;
                     break;
@@ -801,13 +1066,21 @@ public:
                 case LONG_INT:
                     std::cout << *li;
                     break;
+                    
+                case LONG_LONG_INT:
+                    std::cout << *lli;
+                    break;
                 
                 case UNSIGNED_INT:
                     std::cout << *ui;
                     break;
                 
-                case UNSIGNED_LONG_INT:
+                case LONG_UNSIGNED_INT:
                     std::cout << *lui;
+                    break;
+                    
+                case LONG_LONG_UNSIGNED_INT:
+                    std::cout << *llui;
                     break;
                 
                 case FLOAT:
@@ -855,6 +1128,11 @@ public:
             
             switch (type_) {
         
+                case BOOL:
+                    if (*bool_) File << "TRUE";
+                    else File << "FALSE";
+                    break;
+                
                 case CHAR:
                     File << *char_;
                     break;
@@ -866,13 +1144,21 @@ public:
                 case LONG_INT:
                     File << *li;
                     break;
+                    
+                case LONG_LONG_INT:
+                    File << *lli;
+                    break;
                 
                 case UNSIGNED_INT:
                     File << *ui;
                     break;
                 
-                case UNSIGNED_LONG_INT:
+                case LONG_UNSIGNED_INT:
                     File << *lui;
+                    break;
+                    
+                case LONG_LONG_UNSIGNED_INT:
+                    File << *llui;
                     break;
                 
                 case FLOAT:
