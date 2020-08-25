@@ -34,15 +34,20 @@ lg.info(...),
 lg.error(...),
 lg.warning(...)
 lg.critical(...)
-lg.get_path();
-lg.get_file_name();
+
+
+lg.set_path("some string");
+lg.set_file_name("...");
+
+lg.get_path();      //returns std::stirng
+lg.get_file_name(); //returns std::stirng
 */
 
 //Example program:
 
 //#include <iostream>
 //#include "cpp-log/Log.h"
-//Log lg{"Experiment.log", "LOG", LEVEL::WARNING, LEVEL::INFO};
+//Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::INFO};
 
 //...
 
@@ -83,7 +88,12 @@ lg.get_file_name();
 #include <chrono>
 #include <ctime>
 
-enum LEVEL {
+
+class Log {
+
+public:
+    
+    enum LEVEL {
     
         DEBUG,
         INFO,
@@ -92,8 +102,8 @@ enum LEVEL {
         CRITICAL,
         DISABLED = 999
     };
-
-class Log {
+    
+private:
 
     enum VAR_TYPE {
     
@@ -151,7 +161,7 @@ public:
     char_{nullptr}, int_{nullptr}, li{nullptr}, ui{nullptr}, lui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
 
         set_path(pth);
-        set_file(fname);
+        set_file_name(fname);
         set_fl_lvl(fl_lvl);
         set_cn_lvl(cn_lvl);
 
@@ -176,7 +186,7 @@ public:
 
     void set_path(const std::string &pth) { Path = pth; }
     
-    void set_file(const std::string &fname) { File_Name = fname; }
+    void set_file_name(const std::string &fname) { File_Name = fname; }
 
     std::string path() const { return Path; }
     
