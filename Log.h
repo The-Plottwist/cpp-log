@@ -64,7 +64,6 @@ int main () {
   return 0;
 } */
 
-
 #ifndef Log_H
 #define Log_H
 
@@ -79,13 +78,12 @@ int main () {
 #define MAKE_DIRECTORY mkdir(Path.c_str(),0777);
 #endif
 
-/* --------------------- CHECK IF THREAD HEADER INCLUDED -------------------- */
 #ifdef _GLIBCXX_THREAD
-#define THREAD_SAFE_LOCK write.lock();
-#define THREAD_SAFE_UNLOCK write.unlock();
+#define MUTEX_LOCK_ write.lock();
+#define MUTEX_UNLOCK_ write.unlock();
 #else
-#define THREAD_SAFE_LOCK 
-#define THREAD_SAFE_UNLOCK 
+#define MUTEX_LOCK_ 
+#define MUTEX_UNLOCK_ 
 #endif
 
 #include <iostream>
@@ -233,9 +231,9 @@ public:
 
     void debug(const std::string &message) {
     
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -244,9 +242,9 @@ public:
         if (bool_ == nullptr) bool_ = new bool;
         *bool_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -255,9 +253,9 @@ public:
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -267,9 +265,9 @@ public:
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long int &variable) {
@@ -277,9 +275,9 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long long int &variable) {
@@ -287,9 +285,9 @@ public:
         if (lli == nullptr) lli = new long long int;
         *lli = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const unsigned int &variable) {
@@ -297,9 +295,9 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long unsigned int &variable) {
@@ -307,9 +305,9 @@ public:
         if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long long unsigned int &variable) {
@@ -317,9 +315,9 @@ public:
         if (llui == nullptr) llui = new long long unsigned int;
         *llui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -329,9 +327,9 @@ public:
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -341,9 +339,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long double &variable) {
@@ -351,9 +349,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -364,9 +362,9 @@ public:
 
     void info(const std::string &message) {
     
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -375,9 +373,9 @@ public:
         if (bool_ == nullptr) bool_ = new bool;
         *bool_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::BOOL);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -386,9 +384,9 @@ public:
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::CHAR);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -398,9 +396,9 @@ public:
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long int &variable) {
@@ -408,9 +406,9 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long long int &variable) {
@@ -418,9 +416,9 @@ public:
         if (lli == nullptr) lli = new long long int;
         *lli = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const unsigned int &variable) {
@@ -428,9 +426,9 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long unsigned int &variable) {
@@ -438,9 +436,9 @@ public:
         if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long long unsigned int &variable) {
@@ -448,9 +446,9 @@ public:
         if (llui == nullptr) llui = new long long unsigned int;
         *llui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -460,9 +458,9 @@ public:
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::FLOAT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -472,9 +470,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long double &variable) {
@@ -482,9 +480,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -495,9 +493,9 @@ public:
     
     void error(const std::string &message) {
     
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -506,9 +504,9 @@ public:
         if (bool_ == nullptr) bool_ = new bool;
         *bool_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::BOOL);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -517,9 +515,9 @@ public:
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::CHAR);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -529,9 +527,9 @@ public:
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long int &variable) {
@@ -539,9 +537,9 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long long int &variable) {
@@ -549,9 +547,9 @@ public:
         if (lli == nullptr) lli = new long long int;
         *lli = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const unsigned int &variable) {
@@ -559,9 +557,9 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long unsigned int &variable) {
@@ -569,9 +567,9 @@ public:
         if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long long unsigned int &variable) {
@@ -579,9 +577,9 @@ public:
         if (llui == nullptr) llui = new long long unsigned int;
         *llui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -591,9 +589,9 @@ public:
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -604,9 +602,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long double &variable) {
@@ -614,9 +612,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -627,9 +625,9 @@ public:
     
     void warning(const std::string &message) {
     
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -638,9 +636,9 @@ public:
         if (bool_ == nullptr) bool_ = new bool;
         *bool_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::BOOL);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -649,9 +647,9 @@ public:
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::CHAR);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -661,9 +659,9 @@ public:
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long int &variable) {
@@ -671,9 +669,9 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long long int &variable) {
@@ -681,9 +679,9 @@ public:
         if (lli == nullptr) lli = new long long int;
         *lli = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const unsigned int &variable) {
@@ -691,9 +689,9 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long unsigned int &variable) {
@@ -701,9 +699,9 @@ public:
         if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long long unsigned int &variable) {
@@ -711,9 +709,9 @@ public:
         if (llui == nullptr) llui = new long long unsigned int;
         *llui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -723,9 +721,9 @@ public:
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -735,9 +733,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long double &variable) {
@@ -745,9 +743,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -758,9 +756,9 @@ public:
     
     void critical(const std::string &message) {
     
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -769,9 +767,9 @@ public:
         if (bool_ == nullptr) bool_ = new bool;
         *bool_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -780,9 +778,9 @@ public:
         if (char_ == nullptr) char_ = new char;
         *char_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -792,9 +790,9 @@ public:
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long int &variable) {
@@ -802,9 +800,9 @@ public:
         if (li == nullptr) li = new long int;
         *li = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long long int &variable) {
@@ -812,9 +810,9 @@ public:
         if (lli == nullptr) lli = new long long int;
         *lli = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const unsigned int &variable) {
@@ -822,9 +820,9 @@ public:
         if (ui == nullptr) ui = new unsigned int;
         *ui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long unsigned int &variable) {
@@ -832,9 +830,9 @@ public:
         if (lui == nullptr) lui = new long unsigned int;
         *lui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long long unsigned int &variable) {
@@ -842,9 +840,9 @@ public:
         if (llui == nullptr) llui = new long long unsigned int;
         *llui = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -854,9 +852,9 @@ public:
         if (float_ == nullptr) float_ = new float;
         *float_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
@@ -866,9 +864,9 @@ public:
         if (double_ == nullptr) double_ = new double;
         *double_ = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long double &variable) {
@@ -876,9 +874,9 @@ public:
         if (ld == nullptr) ld = new long double;
         *ld = variable;
         
-        THREAD_SAFE_LOCK
+        MUTEX_LOCK_
         Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
-        THREAD_SAFE_UNLOCK
+        MUTEX_UNLOCK_
     }
     
 
