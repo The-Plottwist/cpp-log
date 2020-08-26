@@ -5,16 +5,13 @@ Header only logging library.
 # Benefits
 
 - Thread safe
-  
-  - Checks if standard thread library included.
-    
-    - If so enables mutex.
 
 - Fast
   
-  - No type conversion.
+  - All fundamental types supported
     
-    - Excluding "short"
+    - Except for char16_t & char32_t
+    - Use *`std::to_string`* in that case
 
 - Easy to use
   
@@ -60,14 +57,14 @@ file_name();
     
     - **<mark>Has no recurs.</mark>**  Only makes the last directory.
 
-# Examples:
+# Examples
 
 ### Standard
 
 ```cpp
 #include "cpp-log/Log.h"
 
-Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::DEBUG};
+LOG lg{"Experiment.log", "LOG", LOG::LEVEL::WARNING, LOG::LEVEL::DEBUG};
 
 int main () {
 
@@ -88,7 +85,7 @@ int main () {
  }
 ```
 
-### Possible Output:
+### Possible output:
 
 ##### Console
 
@@ -109,15 +106,30 @@ int main () {
 [25-08-2020] [19:49:18] 0ms :CRITICAL: The X: -123, The Y: 521
 ```
 
+### Valgrind
+
+---
+
+```console
+==8838== HEAP SUMMARY:
+==8838==     in use at exit: 0 bytes in 0 blocks
+==8838==   total heap usage: 38 allocs, 38 frees, 132,005 bytes allocated
+==8838== 
+==8838== All heap blocks were freed -- no leaks are possible
+==8838== 
+==8838== For lists of detected and suppressed errors, rerun with: -s
+==8838== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
+
 ---
 
 ### Thread
 
 ```cpp
 #include <thread>
-#include "Log.h"
+#include "cpp-log/Log.h"
 
-Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::DEBUG};
+LOG lg{"Experiment.log", "LOG", LOG::LEVEL::WARNING, LOG::LEVEL::DEBUG};
 
 void test (const float &f) {
 
@@ -130,7 +142,6 @@ void test (const float &f) {
 
 int main () {
 
-    int i{15123123};
     float f{1098.688};
 
     std::thread threads[5];
@@ -188,6 +199,27 @@ int main () {
 [25-08-2020] [19:58:22] 2ms :WARNING: Float: 1098.69
 [25-08-2020] [19:58:22] 2ms :CRITICAL: Float: 1098.69
 ```
+
+---
+
+### Valgrind
+
+```console
+==8726== HEAP SUMMARY:
+==8726==     in use at exit: 0 bytes in 0 blocks
+==8726==   total heap usage: 124 allocs, 124 frees, 299,408 bytes allocated
+==8726== 
+==8726== All heap blocks were freed -- no leaks are possible
+==8726== 
+==8726== For lists of detected and suppressed errors, rerun with: -s
+==8726== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+```
+
+---
+
+# Warning
+
+### *<u>In case Log file cannot open the program will be asserted.</u>*
 
 # Contribution:
 
