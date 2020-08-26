@@ -184,6 +184,24 @@ private:
     
 /* -------------------------------- VARIABLES ------------------------------- */
     
+    void delete_all_ () {
+    
+        delete bool_;
+        delete char_;
+        delete wch;
+        delete si;
+        delete sui;
+        delete int_;
+        delete li;
+        delete lli;
+        delete ui;
+        delete lui;
+        delete llui;
+        delete float_;
+        delete double_;
+        delete ld;
+    }
+    
 public:
 
     LOG (const std::string &fname, const std::string &pth, const LEVEL cn_lvl, const LEVEL fl_lvl)
@@ -201,23 +219,7 @@ public:
         clear.close();
     }
 
-    ~LOG () {
-        
-        delete bool_;
-        delete char_;
-        delete wch;
-        delete si;
-        delete sui;
-        delete int_;
-        delete li;
-        delete lli;
-        delete ui;
-        delete lui;
-        delete llui;
-        delete float_;
-        delete double_;
-        delete ld;
-    }
+    ~LOG () { delete_all_(); }
 
 /* ------------------------------- File values ------------------------------ */
 
@@ -1117,7 +1119,12 @@ public:
     
     std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         
-        assert((File.is_open()) && "LOG file couldn't opened.");
+        if (!File.is_open()) {
+            
+            delete_all_();
+            assert((false) && "LOG file couldn't opened.");
+        }
+        
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -1279,7 +1286,12 @@ public:
     
     std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         
-        assert((File.is_open()) && "LOG file couldn't opened.");
+        if (!File.is_open()) {
+            
+            delete_all_();
+            assert((false) && "LOG file couldn't opened.");
+        }
+        
         if (lg_lvl >= file_level) {
 
             File << "[";
