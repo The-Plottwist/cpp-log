@@ -2,7 +2,7 @@
 
 /* -------------------------------- COPYRIGHT -------------------------------
 
-    <C++ Thread safe Logging library>
+    <C++ Thread safe LOGging library>
     Copyright (C) <2020>  <Fatih Yeğin>
 
     This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 //USAGE:
 //Define a global object:
-//Log lg{"FILE_NAME.log", "DIR_NAME or PATH", CONSOLE_LEVEL, FILE_LEVEL};
+//LOG lg{"FILE_NAME.log", "DIR_NAME or PATH", CONSOLE_LEVEL, FILE_LEVEL};
 
 //Use that object for logging.
 
@@ -47,8 +47,8 @@ get_file_name(); //returns std::stirng
 
 /*
 #//include <iostream>
-#//include "cpp-log/Log.h"
-Log lg{"Experiment.log", "LOG", Log::LEVEL::WARNING, Log::LEVEL::INFO};
+#//include "cpp-log/LOG.h"
+LOG lg{"Experiment.log", "LOG", LOG::LEVEL::WARNING, LOG::LEVEL::INFO};
 
 ...
 
@@ -64,8 +64,8 @@ int main () {
   return 0;
 } */
 
-#ifndef Log_H
-#define Log_H
+#ifndef LOG_H
+#define LOG_H
 
 #ifdef _WIN32
 #define FOLDER_SEPERATOR "\\"
@@ -102,7 +102,7 @@ int main () {
 #include <ctime>
 
 
-class Log {
+class LOG {
 
 public:
     
@@ -122,6 +122,9 @@ private:
     
         BOOL,
         CHAR,
+        WCHAR_T,
+        SHORT_INT,
+        SHORT_UNSIGNED_INT,
         INT,
         LONG_INT,
         LONG_LONG_INT,
@@ -161,7 +164,11 @@ private:
     bool *bool_;
 
     char *char_;
+    wchar_t *wch;
 
+    short int *si;
+    short unsigned int *sui;
+    
     int *int_;
     long int *li;
     long long int *lli;
@@ -179,9 +186,10 @@ private:
     
 public:
 
-    Log (const std::string &fname, const std::string &pth, const LEVEL cn_lvl, const LEVEL fl_lvl)
+    LOG (const std::string &fname, const std::string &pth, const LEVEL cn_lvl, const LEVEL fl_lvl)
     :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()),
-    bool_{nullptr}, char_{nullptr}, int_{nullptr}, li{nullptr}, lli{nullptr}, ui{nullptr}, lui{nullptr}, llui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
+    bool_{nullptr}, char_{nullptr}, wch{nullptr}, si{nullptr}, sui{nullptr}, int_{nullptr}, li{nullptr},
+    lli{nullptr}, ui{nullptr}, lui{nullptr}, llui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
 
         set_path(pth);
         set_file_name(fname);
@@ -193,10 +201,13 @@ public:
         clear.close();
     }
 
-    ~Log () {
+    ~LOG () {
         
         delete bool_;
         delete char_;
+        delete wch;
+        delete si;
+        delete sui;
         delete int_;
         delete li;
         delete lli;
@@ -224,7 +235,7 @@ public:
     
     void set_cn_lvl(const LEVEL &cn_lvl) { console_level = cn_lvl; }
 
-/* ------------------------------ Log functions ----------------------------- */
+/* ------------------------------ LOG functions ----------------------------- */
 
 
     /* ---------------------------------- DEBUG --------------------------------- */
@@ -248,6 +259,16 @@ public:
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
+    void debug(const std::string &message, const wchar_t &variable) {
+        
+        if (wch == nullptr) wch = new wchar_t;
+        *wch = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
+        MUTEX_UNLOCK_
+    }
+    
     void debug(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
@@ -259,8 +280,28 @@ public:
     }
     
 
-
-    void debug(const std::string &message, const int variable) {
+/* ----------------------------------- INT ---------------------------------- */
+    void debug(const std::string &message, const short int &variable) {
+        
+        if (si == nullptr) si = new short int;
+        *si = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void debug(const std::string &message, const short unsigned int &variable) {
+        
+        if (sui == nullptr) sui = new short unsigned int;
+        *sui = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void debug(const std::string &message, const int &variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
@@ -379,6 +420,16 @@ public:
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
+    void info(const std::string &message, const wchar_t &variable) {
+        
+        if (wch == nullptr) wch = new wchar_t;
+        *wch = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
+        MUTEX_UNLOCK_
+    }
+    
     void info(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
@@ -391,7 +442,27 @@ public:
     
 
     /* ----------------------------------- INT ---------------------------------- */
-    void info(const std::string &message, const int variable) {
+    void info(const std::string &message, const short int &variable) {
+        
+        if (si == nullptr) si = new short int;
+        *si = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void info(const std::string &message, const short unsigned int &variable) {
+        
+        if (sui == nullptr) sui = new short unsigned int;
+        *sui = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void info(const std::string &message, const int &variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
@@ -510,6 +581,16 @@ public:
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
+    void error(const std::string &message, const wchar_t &variable) {
+        
+        if (wch == nullptr) wch = new wchar_t;
+        *wch = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
+        MUTEX_UNLOCK_
+    }
+    
     void error(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
@@ -522,7 +603,27 @@ public:
     
 
     /* ----------------------------------- INT ---------------------------------- */
-    void error(const std::string &message, const int variable) {
+    void error(const std::string &message, const short int &variable) {
+        
+        if (si == nullptr) si = new short int;
+        *si = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void error(const std::string &message, const short unsigned int &variable) {
+        
+        if (sui == nullptr) sui = new short unsigned int;
+        *sui = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void error(const std::string &message, const int &variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
@@ -642,6 +743,16 @@ public:
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
+    void warning(const std::string &message, const wchar_t &variable) {
+        
+        if (wch == nullptr) wch = new wchar_t;
+        *wch = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
+        MUTEX_UNLOCK_
+    }
+    
     void warning(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
@@ -654,7 +765,27 @@ public:
     
 
     /* ----------------------------------- INT ---------------------------------- */
-    void warning(const std::string &message, const int variable) {
+    void warning(const std::string &message, const short int &variable) {
+        
+        if (si == nullptr) si = new short int;
+        *si = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void warning(const std::string &message, const short unsigned int &variable) {
+        
+        if (sui == nullptr) sui = new short unsigned int;
+        *sui = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void warning(const std::string &message, const int &variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
@@ -773,6 +904,16 @@ public:
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
+    void critical(const std::string &message, const wchar_t &variable) {
+        
+        if (wch == nullptr) wch = new wchar_t;
+        *wch = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
+        MUTEX_UNLOCK_
+    }
+    
     void critical(const std::string &message, const char &variable) {
         
         if (char_ == nullptr) char_ = new char;
@@ -785,7 +926,27 @@ public:
     
 
     /* ----------------------------------- INT ---------------------------------- */
-    void critical(const std::string &message, const int variable) {
+    void critical(const std::string &message, const short int &variable) {
+        
+        if (si == nullptr) si = new short int;
+        *si = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void critical(const std::string &message, const short unsigned int &variable) {
+        
+        if (sui == nullptr) sui = new short unsigned int;
+        *sui = variable;
+        
+        MUTEX_LOCK_
+        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        MUTEX_UNLOCK_
+    }
+    
+    void critical(const std::string &message, const int &variable) {
         
         if (int_ == nullptr) int_ = new int;
         *int_ = variable;
@@ -956,7 +1117,7 @@ public:
     
     std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         
-        assert((File.is_open()) && "Log file couldn't opened.");
+        assert((File.is_open()) && "LOG file couldn't opened.");
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -1061,6 +1222,18 @@ public:
                     std::cout << *char_;
                     break;
                 
+                case WCHAR_T:
+                    std::cout << *wch;
+                    break;
+                
+                case SHORT_INT:
+                    std::cout << *si;
+                    break;
+                
+                case SHORT_UNSIGNED_INT:
+                    std::cout << *sui;
+                    break;
+                
                 case INT:
                     std::cout << *int_;
                     break;
@@ -1106,7 +1279,7 @@ public:
     
     std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
         
-        assert((File.is_open()) && "Log file couldn't opened.");
+        assert((File.is_open()) && "LOG file couldn't opened.");
         if (lg_lvl >= file_level) {
 
             File << "[";
@@ -1137,6 +1310,18 @@ public:
                 
                 case CHAR:
                     File << *char_;
+                    break;
+                
+                case WCHAR_T:
+                    File << *wch;
+                    break;
+                
+                case SHORT_INT:
+                    File << *si;
+                    break;
+                
+                case SHORT_UNSIGNED_INT:
+                    File << *sui;
                     break;
                 
                 case INT:
