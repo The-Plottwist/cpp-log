@@ -11,7 +11,7 @@ Header only logging library.
   - All fundamental types supported
     
     - Except for char16_t & char32_t
-    - Use *`std::to_string`* in that case
+    - Use *`std::to_string`* if that's case
 
 - Easy to use
   
