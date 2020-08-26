@@ -53,9 +53,9 @@ file_name();
   
   - "set_path" can be a single directory too.
   
-  - If it is a path make sure all directories exist.
+  - ***<u>If it is a path make sure all directories exist.</u>***
     
-    - **<mark>Has no recurs.</mark>**  Only makes the last directory.
+    - **<mark><u>Has no recurs.</u></mark>**  Only makes the last directory.
 
 # Examples
 
@@ -219,7 +219,7 @@ int main () {
 
 # Warning
 
-### *<u>In case Log file cannot open the program will be asserted.</u>*
+### *<u>In case Log file couldn't open the program will be asserted.</u>*
 
 # Contribution:
 
