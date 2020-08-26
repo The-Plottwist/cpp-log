@@ -1,6 +1,6 @@
 # cpp-log
 
-Header only logging library. (For Linux and Windows)
+Header only logging library.
 
 # Benefits
 
