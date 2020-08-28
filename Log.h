@@ -1045,8 +1045,7 @@ public:
 
     /* -------------------------------- CRITICAL -------------------------------- */
 
-
-/* --------------------------------- Writing -------------------------------- */
+private:
 
     void Write_LOG(const LEVEL &lg_lvl, const std::string &message) {
 
