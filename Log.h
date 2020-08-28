@@ -81,10 +81,16 @@ int main () {
 #ifdef _GLIBCXX_THREAD
 #define MUTEX_LOCK_ write.lock();
 #define MUTEX_UNLOCK_ write.unlock();
+#define CONST_MUTEX_LOCK_ const_write.lock();
+#define CONST_MUTEX_UNLOCK_ const_write.unlock();
 #else
 #define MUTEX_LOCK_ 
+
 #define MUTEX_UNLOCK_ 
+#define CONST_MUTEX_LOCK_ 
+#define CONST_MUTEX_UNLOCK_ 
 #endif
+
 
 #include <iostream>
 #include <string>
@@ -137,6 +143,7 @@ private:
     };
 
     std::mutex write;
+    std::mutex const_write;
 
     std::string Path;
     std::string File_Name;
@@ -159,7 +166,7 @@ private:
     int sec;
     int ms;
     
-/* -------------------------------- VARIABLES ------------------------------- */
+/* -------------------------------- POINTERS ------------------------------- */
 
     bool *bool_;
 
@@ -182,7 +189,33 @@ private:
     double *double_;
     long double *ld;
     
-/* -------------------------------- VARIABLES ------------------------------- */
+/* -------------------------------- POINTERS ------------------------------- */
+
+
+/* -------------------------------- CONST POINTERS ------------------------------- */
+    
+    const bool *c_bool_;
+    
+    const char *c_char_;
+    const wchar_t *c_wch;
+    
+    const short int *c_si;
+    const short unsigned int *c_sui;
+    
+    const int *c_int_;
+    const long int *c_li;
+    const long long int *c_lli;
+    
+    const unsigned int *c_ui;
+    const long unsigned int *c_lui;
+    const long long unsigned int *c_llui;
+    
+    const float *c_float_;
+    
+    const double *c_double_;
+    const long double *c_ld;
+
+/* -------------------------------- CONST POINTERS ------------------------------- */
     
     void delete_all_ () {
     
@@ -204,10 +237,12 @@ private:
     
 public:
 
-    LOG (const std::string &fname, const std::string &pth, const LEVEL cn_lvl, const LEVEL fl_lvl)
+    LOG (const std::string &fname, const std::string &pth, const LEVEL &cn_lvl, const LEVEL &fl_lvl)
     :rawdate(nullptr), rawms_start(std::chrono::system_clock::now()),
     bool_{nullptr}, char_{nullptr}, wch{nullptr}, si{nullptr}, sui{nullptr}, int_{nullptr}, li{nullptr},
-    lli{nullptr}, ui{nullptr}, lui{nullptr}, llui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr} {
+    lli{nullptr}, ui{nullptr}, lui{nullptr}, llui{nullptr}, float_{nullptr}, double_{nullptr}, ld{nullptr},
+    c_bool_{nullptr}, c_char_{nullptr}, c_wch{nullptr}, c_si{nullptr}, c_sui{nullptr}, c_int_{nullptr}, c_li{nullptr},
+    c_lli{nullptr}, c_ui{nullptr}, c_lui{nullptr}, c_llui{nullptr}, c_float_{nullptr}, c_double_{nullptr}, c_ld{nullptr} {
 
         set_path(pth);
         set_file_name(fname);
@@ -245,39 +280,75 @@ public:
     void debug(const std::string &message) {
     
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message);
+        write_log(LEVEL::DEBUG, message);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
     void debug(const std::string &message, const bool variable) {
         
-        if (bool_ == nullptr) bool_ = new bool;
+        if (!bool_) {
+        
+            try { bool_ = new bool; }
+            catch (std::bad_alloc) {
+            
+                c_bool_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *bool_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
     void debug(const std::string &message, const wchar_t &variable) {
         
-        if (wch == nullptr) wch = new wchar_t;
+        if (!wch) {
+        
+            try { wch = new wchar_t; }
+            catch (std::bad_alloc) {
+            
+                c_wch = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *wch = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const char &variable) {
         
-        if (char_ == nullptr) char_ = new char;
+        if (!char_) {
+        
+            try { char_ = new char; }
+            catch (std::bad_alloc) {
+            
+                c_char_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *char_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
         MUTEX_UNLOCK_
     }
     
@@ -285,81 +356,177 @@ public:
 /* ----------------------------------- INT ---------------------------------- */
     void debug(const std::string &message, const short int &variable) {
         
-        if (si == nullptr) si = new short int;
+        if (!si) {
+        
+            try { si = new short int; }
+            catch (std::bad_alloc) {
+            
+                c_si = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *si = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const short unsigned int &variable) {
         
-        if (sui == nullptr) sui = new short unsigned int;
+        if (!sui) {
+        
+            try { sui = new short unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_sui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *sui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const int &variable) {
         
-        if (int_ == nullptr) int_ = new int;
+        if (!int_) {
+        
+            try { int_ = new int; }
+            catch (std::bad_alloc) {
+            
+                c_int_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *int_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long int &variable) {
         
-        if (li == nullptr) li = new long int;
+        if (!li) {
+        
+            try { li = new long int; }
+            catch (std::bad_alloc) {
+            
+                c_li = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *li = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long long int &variable) {
         
-        if (lli == nullptr) lli = new long long int;
+        if (!lli) {
+        
+            try { lli = new long long int; }
+            catch (std::bad_alloc) {
+            
+                c_lli = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lli = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const unsigned int &variable) {
         
-        if (ui == nullptr) ui = new unsigned int;
+        if (!ui) {
+        
+            try { ui = new unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_ui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new long unsigned int;
+        if (!lui) {
+        
+            try { lui = new long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_lui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long long unsigned int &variable) {
         
-        if (llui == nullptr) llui = new long long unsigned int;
+        if (!llui) {
+        
+            try { llui = new long long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_llui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *llui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
@@ -367,11 +534,23 @@ public:
     /* ---------------------------------- FLOAT --------------------------------- */
     void debug(const std::string &message, const float &variable) {
         
-        if (float_ == nullptr) float_ = new float;
+        if (!float_) {
+        
+            try { float_ = new float; }
+            catch (std::bad_alloc) {
+            
+                c_float_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *float_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
         MUTEX_UNLOCK_
     }
     
@@ -379,21 +558,45 @@ public:
     /* --------------------------------- DOUBLE --------------------------------- */
     void debug(const std::string &message, const double &variable) {
         
-        if (double_ == nullptr) double_ = new double;
+        if (!double_) {
+        
+            try { double_ = new double; }
+            catch (std::bad_alloc) {
+            
+                c_double_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *double_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
         MUTEX_UNLOCK_
     }
     
     void debug(const std::string &message, const long double &variable) {
         
-        if (ld == nullptr) ld = new long double;
+        if (!ld) {
+        
+            try { ld = new long double; }
+            catch (std::bad_alloc) {
+            
+                c_ld = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ld = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
+        write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
         MUTEX_UNLOCK_
     }
     
@@ -406,39 +609,75 @@ public:
     void info(const std::string &message) {
     
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message);
+        write_log(LEVEL::INFO, message);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
     void info(const std::string &message, const bool variable) {
         
-        if (bool_ == nullptr) bool_ = new bool;
+        if (!bool_) {
+        
+            try { bool_ = new bool; }
+            catch (std::bad_alloc) {
+            
+                c_bool_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::BOOL);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *bool_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::BOOL);
+        write_log(LEVEL::INFO, message, VAR_TYPE::BOOL);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
     void info(const std::string &message, const wchar_t &variable) {
         
-        if (wch == nullptr) wch = new wchar_t;
+        if (!wch) {
+        
+            try { wch = new wchar_t; }
+            catch (std::bad_alloc) {
+            
+                c_wch = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *wch = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
+        write_log(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const char &variable) {
         
-        if (char_ == nullptr) char_ = new char;
+        if (!char_) {
+        
+            try { char_ = new char; }
+            catch (std::bad_alloc) {
+            
+                c_char_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::CHAR);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *char_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::CHAR);
+        write_log(LEVEL::INFO, message, VAR_TYPE::CHAR);
         MUTEX_UNLOCK_
     }
     
@@ -446,81 +685,177 @@ public:
     /* ----------------------------------- INT ---------------------------------- */
     void info(const std::string &message, const short int &variable) {
         
-        if (si == nullptr) si = new short int;
+        if (!si) {
+        
+            try { si = new short int; }
+            catch (std::bad_alloc) {
+            
+                c_si = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *si = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const short unsigned int &variable) {
         
-        if (sui == nullptr) sui = new short unsigned int;
+        if (!sui) {
+        
+            try { sui = new short unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_sui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *sui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const int &variable) {
         
-        if (int_ == nullptr) int_ = new int;
+        if (!int_) {
+        
+            try { int_ = new int; }
+            catch (std::bad_alloc) {
+            
+                c_int_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *int_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long int &variable) {
         
-        if (li == nullptr) li = new long int;
+        if (!li) {
+        
+            try { li = new long int; }
+            catch (std::bad_alloc) {
+            
+                c_li = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *li = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long long int &variable) {
         
-        if (lli == nullptr) lli = new long long int;
+        if (!lli) {
+        
+            try { lli = new long long int; }
+            catch (std::bad_alloc) {
+            
+                c_lli = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lli = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const unsigned int &variable) {
         
-        if (ui == nullptr) ui = new unsigned int;
+        if (!ui) {
+        
+            try { ui = new unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_ui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new long unsigned int;
+        if (!lui) {
+        
+            try { lui = new long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_lui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long long unsigned int &variable) {
         
-        if (llui == nullptr) llui = new long long unsigned int;
+        if (!llui) {
+        
+            try { llui = new long long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_llui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *llui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
@@ -528,11 +863,23 @@ public:
     /* ---------------------------------- FLOAT --------------------------------- */
     void info(const std::string &message, const float &variable) {
         
-        if (float_ == nullptr) float_ = new float;
+        if (!float_) {
+        
+            try { float_ = new float; }
+            catch (std::bad_alloc) {
+            
+                c_float_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::FLOAT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *float_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::FLOAT);
+        write_log(LEVEL::INFO, message, VAR_TYPE::FLOAT);
         MUTEX_UNLOCK_
     }
     
@@ -540,21 +887,45 @@ public:
     /* --------------------------------- DOUBLE --------------------------------- */
     void info(const std::string &message, const double &variable) {
         
-        if (double_ == nullptr) double_ = new double;
+        if (!double_) {
+        
+            try { double_ = new double; }
+            catch (std::bad_alloc) {
+            
+                c_double_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *double_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
+        write_log(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
         MUTEX_UNLOCK_
     }
     
     void info(const std::string &message, const long double &variable) {
         
-        if (ld == nullptr) ld = new long double;
+        if (!ld) {
+        
+            try { ld = new long double; }
+            catch (std::bad_alloc) {
+            
+                c_ld = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ld = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
+        write_log(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
         MUTEX_UNLOCK_
     }
     
@@ -567,39 +938,75 @@ public:
     void error(const std::string &message) {
     
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message);
+        write_log(LEVEL::ERROR, message);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
     void error(const std::string &message, const bool variable) {
         
-        if (bool_ == nullptr) bool_ = new bool;
+        if (!bool_) {
+        
+            try { bool_ = new bool; }
+            catch (std::bad_alloc) {
+            
+                c_bool_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::BOOL);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *bool_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::BOOL);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::BOOL);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
     void error(const std::string &message, const wchar_t &variable) {
         
-        if (wch == nullptr) wch = new wchar_t;
+        if (!wch) {
+        
+            try { wch = new wchar_t; }
+            catch (std::bad_alloc) {
+            
+                c_wch = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *wch = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const char &variable) {
         
-        if (char_ == nullptr) char_ = new char;
+        if (!char_) {
+        
+            try { char_ = new char; }
+            catch (std::bad_alloc) {
+            
+                c_char_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::CHAR);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *char_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::CHAR);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::CHAR);
         MUTEX_UNLOCK_
     }
     
@@ -607,81 +1014,177 @@ public:
     /* ----------------------------------- INT ---------------------------------- */
     void error(const std::string &message, const short int &variable) {
         
-        if (si == nullptr) si = new short int;
+        if (!si) {
+        
+            try { si = new short int; }
+            catch (std::bad_alloc) {
+            
+                c_si = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *si = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const short unsigned int &variable) {
         
-        if (sui == nullptr) sui = new short unsigned int;
+        if (!sui) {
+        
+            try { sui = new short unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_sui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *sui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const int &variable) {
         
-        if (int_ == nullptr) int_ = new int;
+        if (!int_) {
+        
+            try { int_ = new int; }
+            catch (std::bad_alloc) {
+            
+                c_int_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *int_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long int &variable) {
         
-        if (li == nullptr) li = new long int;
+        if (!li) {
+        
+            try { li = new long int; }
+            catch (std::bad_alloc) {
+            
+                c_li = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *li = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long long int &variable) {
         
-        if (lli == nullptr) lli = new long long int;
+        if (!lli) {
+        
+            try { lli = new long long int; }
+            catch (std::bad_alloc) {
+            
+                c_lli = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lli = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const unsigned int &variable) {
         
-        if (ui == nullptr) ui = new unsigned int;
+        if (!ui) {
+        
+            try { ui = new unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_ui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new long unsigned int;
+        if (!lui) {
+        
+            try { lui = new long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_lui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long long unsigned int &variable) {
         
-        if (llui == nullptr) llui = new long long unsigned int;
+        if (!llui) {
+        
+            try { llui = new long long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_llui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *llui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
@@ -689,11 +1192,23 @@ public:
     /* --------------------------------- FLOAT --------------------------------- */
     void error(const std::string &message, const float &variable) {
         
-        if (float_ == nullptr) float_ = new float;
+        if (!float_) {
+        
+            try { float_ = new float; }
+            catch (std::bad_alloc) {
+            
+                c_float_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *float_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
         MUTEX_UNLOCK_
     }
     
@@ -702,21 +1217,45 @@ public:
 
     void error(const std::string &message, const double &variable) {
         
-        if (double_ == nullptr) double_ = new double;
+        if (!double_) {
+        
+            try { double_ = new double; }
+            catch (std::bad_alloc) {
+            
+                c_double_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *double_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
         MUTEX_UNLOCK_
     }
     
     void error(const std::string &message, const long double &variable) {
         
-        if (ld == nullptr) ld = new long double;
+        if (!ld) {
+        
+            try { ld = new long double; }
+            catch (std::bad_alloc) {
+            
+                c_ld = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ld = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
+        write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
         MUTEX_UNLOCK_
     }
     
@@ -729,39 +1268,75 @@ public:
     void warning(const std::string &message) {
     
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message);
+        write_log(LEVEL::WARNING, message);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
     void warning(const std::string &message, const bool variable) {
         
-        if (bool_ == nullptr) bool_ = new bool;
+        if (!bool_) {
+        
+            try { bool_ = new bool; }
+            catch (std::bad_alloc) {
+            
+                c_bool_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::BOOL);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *bool_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::BOOL);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::BOOL);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
     void warning(const std::string &message, const wchar_t &variable) {
         
-        if (wch == nullptr) wch = new wchar_t;
+        if (!wch) {
+        
+            try { wch = new wchar_t; }
+            catch (std::bad_alloc) {
+            
+                c_wch = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *wch = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const char &variable) {
         
-        if (char_ == nullptr) char_ = new char;
+        if (!char_) {
+        
+            try { char_ = new char; }
+            catch (std::bad_alloc) {
+            
+                c_char_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::CHAR);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *char_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::CHAR);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::CHAR);
         MUTEX_UNLOCK_
     }
     
@@ -769,81 +1344,177 @@ public:
     /* ----------------------------------- INT ---------------------------------- */
     void warning(const std::string &message, const short int &variable) {
         
-        if (si == nullptr) si = new short int;
+        if (!si) {
+        
+            try { si = new short int; }
+            catch (std::bad_alloc) {
+            
+                c_si = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *si = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const short unsigned int &variable) {
         
-        if (sui == nullptr) sui = new short unsigned int;
+        if (!sui) {
+        
+            try { sui = new short unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_sui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *sui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const int &variable) {
         
-        if (int_ == nullptr) int_ = new int;
+        if (!int_) {
+        
+            try { int_ = new int; }
+            catch (std::bad_alloc) {
+            
+                c_int_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *int_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long int &variable) {
         
-        if (li == nullptr) li = new long int;
+        if (!li) {
+        
+            try { li = new long int; }
+            catch (std::bad_alloc) {
+            
+                c_li = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *li = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long long int &variable) {
         
-        if (lli == nullptr) lli = new long long int;
+        if (!lli) {
+        
+            try { lli = new long long int; }
+            catch (std::bad_alloc) {
+            
+                c_lli = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lli = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const unsigned int &variable) {
         
-        if (ui == nullptr) ui = new unsigned int;
+        if (!ui) {
+        
+            try { ui = new unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_ui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new long unsigned int;
+        if (!lui) {
+        
+            try { lui = new long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_lui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long long unsigned int &variable) {
         
-        if (llui == nullptr) llui = new long long unsigned int;
+        if (!llui) {
+        
+            try { llui = new long long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_llui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *llui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
@@ -851,11 +1522,23 @@ public:
     /* --------------------------------- FLOAT --------------------------------- */
     void warning(const std::string &message, const float &variable) {
         
-        if (float_ == nullptr) float_ = new float;
+        if (!float_) {
+        
+            try { float_ = new float; }
+            catch (std::bad_alloc) {
+            
+                c_float_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *float_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
         MUTEX_UNLOCK_
     }
     
@@ -863,21 +1546,45 @@ public:
     /* --------------------------------- DOUBLE --------------------------------- */
     void warning(const std::string &message, const double &variable) {
         
-        if (double_ == nullptr) double_ = new double;
+        if (!double_) {
+        
+            try { double_ = new double; }
+            catch (std::bad_alloc) {
+            
+                c_double_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *double_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
         MUTEX_UNLOCK_
     }
     
     void warning(const std::string &message, const long double &variable) {
         
-        if (ld == nullptr) ld = new long double;
+        if (!ld) {
+        
+            try { ld = new long double; }
+            catch (std::bad_alloc) {
+            
+                c_ld = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ld = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
+        write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
         MUTEX_UNLOCK_
     }
     
@@ -890,39 +1597,75 @@ public:
     void critical(const std::string &message) {
     
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message);
+        write_log(LEVEL::CRITICAL, message);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
     void critical(const std::string &message, const bool variable) {
         
-        if (bool_ == nullptr) bool_ = new bool;
+        if (!bool_) {
+        
+            try { bool_ = new bool; }
+            catch (std::bad_alloc) {
+            
+                c_bool_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *bool_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
         MUTEX_UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
     void critical(const std::string &message, const wchar_t &variable) {
         
-        if (wch == nullptr) wch = new wchar_t;
+        if (!wch) {
+        
+            try { wch = new wchar_t; }
+            catch (std::bad_alloc) {
+            
+                c_wch = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *wch = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const char &variable) {
         
-        if (char_ == nullptr) char_ = new char;
+        if (!char_) {
+        
+            try { char_ = new char; }
+            catch (std::bad_alloc) {
+            
+                c_char_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *char_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
         MUTEX_UNLOCK_
     }
     
@@ -930,81 +1673,177 @@ public:
     /* ----------------------------------- INT ---------------------------------- */
     void critical(const std::string &message, const short int &variable) {
         
-        if (si == nullptr) si = new short int;
+        if (!si) {
+        
+            try { si = new short int; }
+            catch (std::bad_alloc) {
+            
+                c_si = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *si = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const short unsigned int &variable) {
         
-        if (sui == nullptr) sui = new short unsigned int;
+        if (!sui) {
+        
+            try { sui = new short unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_sui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *sui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const int &variable) {
         
-        if (int_ == nullptr) int_ = new int;
+        if (!int_) {
+        
+            try { int_ = new int; }
+            catch (std::bad_alloc) {
+            
+                c_int_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *int_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long int &variable) {
         
-        if (li == nullptr) li = new long int;
+        if (!li) {
+        
+            try { li = new long int; }
+            catch (std::bad_alloc) {
+            
+                c_li = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *li = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long long int &variable) {
         
-        if (lli == nullptr) lli = new long long int;
+        if (!lli) {
+        
+            try { lli = new long long int; }
+            catch (std::bad_alloc) {
+            
+                c_lli = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lli = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const unsigned int &variable) {
         
-        if (ui == nullptr) ui = new unsigned int;
+        if (!ui) {
+        
+            try { ui = new unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_ui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long unsigned int &variable) {
         
-        if (lui == nullptr) lui = new long unsigned int;
+        if (!lui) {
+        
+            try { lui = new long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_lui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *lui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long long unsigned int &variable) {
         
-        if (llui == nullptr) llui = new long long unsigned int;
+        if (!llui) {
+        
+            try { llui = new long long unsigned int; }
+            catch (std::bad_alloc) {
+            
+                c_llui = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *llui = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
         MUTEX_UNLOCK_
     }
     
@@ -1012,33 +1851,69 @@ public:
     /* --------------------------------- FLOAT --------------------------------- */
     void critical(const std::string &message, const float &variable) {
         
-        if (float_ == nullptr) float_ = new float;
+        if (!float_) {
+        
+            try { float_ = new float; }
+            catch (std::bad_alloc) {
+            
+                c_float_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *float_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
         MUTEX_UNLOCK_
     }
     
-
+ 
     /* --------------------------------- DOUBLE --------------------------------- */
     void critical(const std::string &message, const double &variable) {
         
-        if (double_ == nullptr) double_ = new double;
+        if (!double_) {
+        
+            try { double_ = new double; }
+            catch (std::bad_alloc) {
+            
+                c_double_ = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *double_ = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
         MUTEX_UNLOCK_
     }
     
     void critical(const std::string &message, const long double &variable) {
         
-        if (ld == nullptr) ld = new long double;
+        if (!ld) {
+        
+            try { ld = new long double; }
+            catch (std::bad_alloc) {
+            
+                c_ld = &variable;
+                
+                CONST_MUTEX_LOCK_
+                const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
+                CONST_MUTEX_UNLOCK_
+            }
+        }
+        
         *ld = variable;
         
         MUTEX_LOCK_
-        Write_LOG(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
+        write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
         MUTEX_UNLOCK_
     }
     
@@ -1047,7 +1922,7 @@ public:
 
 private:
 
-    void Write_LOG(const LEVEL &lg_lvl, const std::string &message) {
+    void write_log(const LEVEL &lg_lvl, const std::string &message) {
 
         std::string level = "";
         switch (lg_lvl) {
@@ -1149,7 +2024,7 @@ private:
     File.close();
     }
     
-    void Write_LOG(const LEVEL &lg_lvl, const std::string &message, const VAR_TYPE type_) {
+    void write_log(const LEVEL &lg_lvl, const std::string &message, const VAR_TYPE &type_) {
 
         std::string level = "";
         switch (lg_lvl) {
@@ -1369,6 +2244,238 @@ private:
                 
                 case LONG_DOUBLE:
                     File << *ld;
+                    break;
+                
+                default:
+                    break;
+            }
+    
+            File << std::endl;
+        }
+    
+    File.close();
+    }
+    
+    void const_write_log(const LEVEL &lg_lvl, const std::string &message, const VAR_TYPE &type_) {
+
+        std::string level = "";
+        switch (lg_lvl) {
+            
+            case DEBUG:
+                level = "DEBUG";
+                break;
+                
+            case INFO:
+                level = "INFO";
+                break;
+                
+            case ERROR:
+                level = "ERROR";
+                break;
+                
+            case WARNING:
+                level = "WARNING";
+                break;
+                
+            case CRITICAL:
+                level = "CRITICAL";
+                break;
+                
+            default:
+                level = "UNKNOWN_LEVEL";
+                break;
+        }
+
+        using namespace std::chrono;
+        system_clock::time_point now = system_clock::now();
+        rawtime = system_clock::to_time_t(now);
+        rawdate = localtime(&rawtime);
+
+        year = 1900 + rawdate->tm_year;
+        month = 1 + rawdate->tm_mon;
+        day = rawdate->tm_mday;
+
+        hour = rawdate->tm_hour;
+        min = rawdate->tm_min;
+        sec = rawdate->tm_sec;
+
+        rawms = duration_cast <milliseconds> (now - rawms_start) %1000;
+        ms = rawms.count();
+
+        MAKE_DIRECTORY
+        if (lg_lvl >= console_level) {
+
+            std::cout << "[";
+            if (day < 10)
+                std::cout << "0";
+            std::cout << day << "-";
+            if (month < 10)
+                std::cout << "0";
+            std::cout << month << "-" << year << "]" << " ";
+
+            std::cout << "[";
+            if (hour < 10)
+                std::cout << "0";
+            std::cout << hour << ":";
+            if (min < 10)
+                std::cout << "0";
+            std::cout << min << ":" << sec << "] " << ms << "ms";
+
+            std::cout << " :" << level << ": ";
+            std::cout << message; 
+            
+            switch (type_) {
+        
+                case BOOL:
+                    if (*c_bool_) std::cout << "TRUE";
+                    else std::cout << "FALSE";
+                    break;
+                
+                case CHAR:
+                    std::cout << *c_char_;
+                    break;
+                
+                case WCHAR_T:
+                    std::cout << *c_wch;
+                    break;
+                
+                case SHORT_INT:
+                    std::cout << *c_si;
+                    break;
+                
+                case SHORT_UNSIGNED_INT:
+                    std::cout << *c_sui;
+                    break;
+                
+                case INT:
+                    std::cout << *c_int_;
+                    break;
+                
+                case LONG_INT:
+                    std::cout << *c_li;
+                    break;
+                    
+                case LONG_LONG_INT:
+                    std::cout << *c_lli;
+                    break;
+                
+                case UNSIGNED_INT:
+                    std::cout << *c_ui;
+                    break;
+                
+                case LONG_UNSIGNED_INT:
+                    std::cout << *c_lui;
+                    break;
+                    
+                case LONG_LONG_UNSIGNED_INT:
+                    std::cout << *c_llui;
+                    break;
+                
+                case FLOAT:
+                    std::cout << *c_float_;
+                    break;
+                
+                case DOUBLE:
+                    std::cout << *c_double_;
+                    break;
+                
+                case LONG_DOUBLE:
+                    std::cout << *c_ld;
+                    break;
+                
+                default:
+                    break;
+            }
+        
+            std::cout << std::endl;
+        }
+    
+    std::ofstream File(Path + FOLDER_SEPERATOR + File_Name, std::ios::app);
+        
+        if (!File.is_open()) {
+            
+            delete_all_();
+            assert((false) && "LOG file couldn't opened.");
+        }
+        
+        if (lg_lvl >= file_level) {
+
+            File << "[";
+            if (day < 10)
+                File << "0";
+            File << day << "-";
+            if (month < 10)
+                File << "0";
+            File << month << "-" << year << "]" << " ";
+
+            File << "[";
+            if (hour < 10)
+                File << "0";
+            File << hour << ":";
+            if (min < 10)
+                File << 0;
+            File << min << ":" << sec << "] " << ms << "ms";
+
+            File << " :" << level << ": ";
+            File << message;
+            
+            switch (type_) {
+        
+                case BOOL:
+                    if (*c_bool_) File << "TRUE";
+                    else File << "FALSE";
+                    break;
+                
+                case CHAR:
+                    File << *c_char_;
+                    break;
+                
+                case WCHAR_T:
+                    File << *c_wch;
+                    break;
+                
+                case SHORT_INT:
+                    File << *c_si;
+                    break;
+                
+                case SHORT_UNSIGNED_INT:
+                    File << *c_sui;
+                    break;
+                
+                case INT:
+                    File << *c_int_;
+                    break;
+                
+                case LONG_INT:
+                    File << *c_li;
+                    break;
+                    
+                case LONG_LONG_INT:
+                    File << *c_lli;
+                    break;
+                
+                case UNSIGNED_INT:
+                    File << *c_ui;
+                    break;
+                
+                case LONG_UNSIGNED_INT:
+                    File << *c_lui;
+                    break;
+                    
+                case LONG_LONG_UNSIGNED_INT:
+                    File << *c_llui;
+                    break;
+                
+                case FLOAT:
+                    File << *c_float_;
+                    break;
+                
+                case DOUBLE:
+                    File << *c_double_;
+                    break;
+                
+                case LONG_DOUBLE:
+                    File << *c_ld;
                     break;
                 
                 default:
