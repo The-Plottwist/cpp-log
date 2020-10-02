@@ -1,5 +1,3 @@
-//BISMILLAH
-
 /* -------------------------------- COPYRIGHT -------------------------------
 
     <C++ Thread safe LOGging library>
