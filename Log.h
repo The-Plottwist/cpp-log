@@ -1,6 +1,6 @@
 /* -------------------------------- COPYRIGHT -------------------------------
 
-    <C++ Thread safe LOGging library>
+    <C++ Loging library>
     Copyright (C) <2020>  <Fatih Yeğin>
 
     This program is free software: you can redistribute it and/or modify
@@ -17,50 +17,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -------------------------------------------------------------------------- */
-
-//USAGE:
-//Define a global object:
-//LOG lg{"FILE_NAME.log", "DIR_NAME or PATH", CONSOLE_LEVEL, FILE_LEVEL};
-
-//Use that object for logging.
-
-//Available commands are:
-
-/*
-debug("message", variable OPTIONAL),
-info(...),
-error(...),
-warning(...)
-critical(...)
-
-
-set_path("some string");
-set_file_name("...");
-
-get_path();      //returns std::stirng
-get_file_name(); //returns std::stirng
-*/
-
-//Example program:
-
-/*
-#//include <iostream>
-#//include "cpp-log/LOG.h"
-LOG lg{"Experiment.log", "LOG", LOG::LEVEL::WARNING, LOG::LEVEL::INFO};
-
-...
-
-int main () {
-  int some_var {5};
-  bool some_other_var{false};
-  
-  lg.info("This message will not be printed to the console but it will be written to the \"LOG/Experiment.log\" file.")
-  lg.warning("This message will be printed to console and will be written to the \"LOG/Experiment.log\" file.");
-  lg.critical("some_var equals: ", some_var);
-  lg.critical("some_var equals: ", some_other_var);
-  
-  return 0;
-} */
 
 #ifndef LOG_H
 #define LOG_H
@@ -128,8 +84,8 @@ private:
     std::string Path;
     std::string File_Name;
     
-    LEVEL file_level;
-    LEVEL console_level;
+    LEVEL file_level_;
+    LEVEL console_level_;
 
     //time
     std::time_t rawtime;
@@ -224,10 +180,10 @@ public:
     c_bool_{nullptr}, c_char_{nullptr}, c_wch{nullptr}, c_si{nullptr}, c_sui{nullptr}, c_int_{nullptr}, c_li{nullptr},
     c_lli{nullptr}, c_ui{nullptr}, c_lui{nullptr}, c_llui{nullptr}, c_float_{nullptr}, c_double_{nullptr}, c_ld{nullptr} {
 
-        set_path(pth);
-        set_file_name(fname);
-        set_fl_lvl(fl_lvl);
-        set_cn_lvl(cn_lvl);
+        path(pth);
+        file_name(fname);
+        file_level(fl_lvl);
+        console_level(cn_lvl);
 
         //clear/make log
         std::ofstream clear(Path + FOLDER_SEPERATOR + File_Name, std::ios::trunc);
@@ -238,19 +194,45 @@ public:
 
 /* ------------------------------- File values ------------------------------ */
 
-    void set_path(const std::string &pth) { Path = pth; }
+    void path(const std::string &pth) { Path = pth; }
     
-    void set_file_name(const std::string &fname) { File_Name = fname; }
-
     std::string path() const { return Path; }
+
+    void file_name(const std::string &fname) { File_Name = fname; }
     
     std::string file_name() const { return File_Name; }
 
 /* --------------------------------- Levels --------------------------------- */
 
-    void set_fl_lvl(const LEVEL &fl_lvl) { file_level = fl_lvl; }
+    void file_level(const LEVEL &fl_lvl) { file_level_ = fl_lvl; }
     
-    void set_cn_lvl(const LEVEL &cn_lvl) { console_level = cn_lvl; }
+    std::string file_level() {
+    
+        switch (file_level_) {
+        
+            case DEBUG:         return "DEBUG";
+            case INFO:          return "INFO";
+            case ERROR:         return "ERROR";
+            case WARNING:       return "WARNING";
+            case CRITICAL:      return "CRITICAL";
+            case DISABLED:      return "DISABLED";
+        }
+    }
+    
+    void console_level(const LEVEL &cn_lvl) { console_level_ = cn_lvl; }
+    
+    std::string console_level() {
+    
+        switch (console_level_) {
+        
+            case DEBUG:         return "DEBUG";
+            case INFO:          return "INFO";
+            case ERROR:         return "ERROR";
+            case WARNING:       return "WARNING";
+            case CRITICAL:      return "CRITICAL";
+            case DISABLED:      return "DISABLED";
+        }
+    }
 
 /* ------------------------------ LOG functions ----------------------------- */
 
@@ -1869,7 +1851,7 @@ private:
         ms = rawms.count();
 
         MAKE_DIRECTORY
-        if (lg_lvl >= console_level) {
+        if (lg_lvl >= console_level_) {
 
             std::cout << "[";
             if (day < 10)
@@ -1899,7 +1881,7 @@ private:
             assert((false) && "LOG file couldn't opened.");
         }
         
-        if (lg_lvl >= file_level) {
+        if (lg_lvl >= file_level_) {
 
             File << "[";
             if (day < 10)
@@ -1971,7 +1953,7 @@ private:
         ms = rawms.count();
 
         MAKE_DIRECTORY
-        if (lg_lvl >= console_level) {
+        if (lg_lvl >= console_level_) {
 
             std::cout << "[";
             if (day < 10)
@@ -2066,7 +2048,7 @@ private:
             assert((false) && "LOG file couldn't opened.");
         }
         
-        if (lg_lvl >= file_level) {
+        if (lg_lvl >= file_level_) {
 
             File << "[";
             if (day < 10)
@@ -2203,7 +2185,7 @@ private:
         ms = rawms.count();
 
         MAKE_DIRECTORY
-        if (lg_lvl >= console_level) {
+        if (lg_lvl >= console_level_) {
 
             std::cout << "[";
             if (day < 10)
@@ -2298,7 +2280,7 @@ private:
             assert((false) && "LOG file couldn't opened.");
         }
         
-        if (lg_lvl >= file_level) {
+        if (lg_lvl >= file_level_) {
 
             File << "[";
             if (day < 10)

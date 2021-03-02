@@ -40,36 +40,38 @@ The levels on the other hand are:
 
 - CRITICAL
 
+- DISABLED
+
 So an example would be:
 
 ```cpp
 LOG lg{"Experiment.log", "LOG", LOG::LEVEL::WARNING, LOG::LEVEL::DEBUG};
 ```
 
-with which the log file can be found in "PROGRAM_DIR/LOG/Experiment.log", and the  levels are WARNING and DEBUG in order, with the former is *console_level* and the latter is *file_level*.
+which the log file can be found in "Program_dir/LOG/Experiment.log". With the **console level** set to WARNING and the **file level** set to DEBUG.
 
 ### Logging functions:
 
 ```cpp
-debug("");       // or debug("", variable);
-info("");        // or info("", variable);
-error("");       // or error("", variable);
-warning("");     // or warning("", variable);
-critical("");    // or critical("", variable);
+debug("");       //or debug("", variable);
+info("");        //or info("", variable);
+error("");       //or error("", variable);
+warning("");     //or warning("", variable);
+critical("");    //or critical("", variable);
 ```
 
 variable types can be any type except for char16_t and char32_t.
 
 ### File operation:
 
-Path and file name can be changed if desired while also can be retrieved in string form.
+All of the below functions accecpts arguments. If no argument is given, then they will return their value in string form.
 
 ```cpp
-set_path("");
-set_file_name("");
+path();             //accepts string
+file_name();        //accepts string
 
-path();
-file_name();
+console_level();    //accepts levels (LOG::LEVEL::DEBUG/INFO/...)
+file_level();       //accepts levels (LOG::LEVEL::DEBUG/ERROR/...)
 ```
 
 # Examples
@@ -88,11 +90,7 @@ int main () {
   lg.warning("This message will appear both in the console and in the log file");
 
   lg.critical("The X: ", x);
-  lg.critical("The Y: ", y);
-
-  //OR
-
-  lg.critical("The X: " + std::to_string(x) + ", The Y: ", y);
+  lg.critical("The Y: ", y);  //or lg.critical("The X: " + std::to_string(x) + ", The Y: ", y);
 
   return 0;
  }
