@@ -76,24 +76,9 @@ int main () {
 #define MAKE_DIRECTORY mkdir(Path.c_str(),0777);
 #endif
 
-#ifdef _GLIBCXX_THREAD
-#define LOCK_ write.lock();
-#define UNLOCK_ write.unlock();
-#define CONST_LOCK_ const_write.lock();
-#define CONST_UNLOCK_ const_write.unlock();
-#else
-#define LOCK_ 
-
-#define UNLOCK_ 
-#define CONST_LOCK_ 
-#define CONST_UNLOCK_ 
-#endif
-
 
 #include <iostream>
 #include <string>
-
-#include <mutex>
 
 //file error
 #include <cassert>
@@ -139,9 +124,6 @@ private:
         DOUBLE,
         LONG_DOUBLE
     };
-
-    std::mutex write;
-    std::mutex const_write;
 
     std::string Path;
     std::string File_Name;
@@ -277,9 +259,7 @@ public:
 
     void debug(const std::string &message) {
     
-        LOCK_
         write_log(LEVEL::DEBUG, message);
-        UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -292,10 +272,8 @@ public:
             
                 c_bool_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::BOOL);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -303,9 +281,7 @@ public:
         
         *bool_ = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::BOOL);
-        UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -318,10 +294,8 @@ public:
             
                 c_wch = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::WCHAR_T);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -329,9 +303,7 @@ public:
         
         *wch = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::WCHAR_T);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const char &variable) {
@@ -343,10 +315,8 @@ public:
             
                 c_char_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::CHAR);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -354,9 +324,7 @@ public:
         
         *char_ = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::CHAR);
-        UNLOCK_
     }
     
 
@@ -370,10 +338,8 @@ public:
             
                 c_si = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -381,9 +347,7 @@ public:
         
         *si = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const short unsigned int &variable) {
@@ -395,10 +359,8 @@ public:
             
                 c_sui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_UNSIGNED_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -406,9 +368,7 @@ public:
         
         *sui = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const int &variable) {
@@ -420,10 +380,8 @@ public:
             
                 c_int_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -431,9 +389,7 @@ public:
         
         *int_ = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const long int &variable) {
@@ -445,10 +401,8 @@ public:
             
                 c_li = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -456,9 +410,7 @@ public:
         
         *li = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const long long int &variable) {
@@ -470,10 +422,8 @@ public:
             
                 c_lli = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -481,9 +431,7 @@ public:
         
         *lli = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const unsigned int &variable) {
@@ -495,10 +443,8 @@ public:
             
                 c_ui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::UNSIGNED_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -506,9 +452,7 @@ public:
         
         *ui = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::UNSIGNED_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const long unsigned int &variable) {
@@ -520,10 +464,8 @@ public:
             
                 c_lui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -531,9 +473,7 @@ public:
         
         *lui = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const long long unsigned int &variable) {
@@ -545,10 +485,8 @@ public:
             
                 c_llui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -556,9 +494,7 @@ public:
         
         *llui = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
 
@@ -572,10 +508,8 @@ public:
             
                 c_float_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::FLOAT);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -583,9 +517,7 @@ public:
         
         *float_ = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::FLOAT);
-        UNLOCK_
     }
     
 
@@ -599,10 +531,8 @@ public:
             
                 c_double_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::DOUBLE);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -610,9 +540,7 @@ public:
         
         *double_ = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::DOUBLE);
-        UNLOCK_
     }
     
     void debug(const std::string &message, const long double &variable) {
@@ -624,10 +552,8 @@ public:
             
                 c_ld = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_DOUBLE);
                 const_write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -635,9 +561,7 @@ public:
         
         *ld = variable;
         
-        LOCK_
         write_log(LEVEL::DEBUG, message, VAR_TYPE::LONG_DOUBLE);
-        UNLOCK_
     }
     
 
@@ -648,9 +572,7 @@ public:
 
     void info(const std::string &message) {
     
-        LOCK_
         write_log(LEVEL::INFO, message);
-        UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -663,10 +585,8 @@ public:
             
                 c_bool_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::BOOL);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::BOOL);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -674,9 +594,7 @@ public:
         
         *bool_ = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::BOOL);
-        UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -689,10 +607,8 @@ public:
             
                 c_wch = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::WCHAR_T);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -700,9 +616,7 @@ public:
         
         *wch = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::WCHAR_T);
-        UNLOCK_
     }
     
     void info(const std::string &message, const char &variable) {
@@ -714,10 +628,8 @@ public:
             
                 c_char_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::CHAR);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::CHAR);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -725,9 +637,7 @@ public:
         
         *char_ = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::CHAR);
-        UNLOCK_
     }
     
 
@@ -741,10 +651,8 @@ public:
             
                 c_si = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -752,9 +660,7 @@ public:
         
         *si = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const short unsigned int &variable) {
@@ -766,10 +672,8 @@ public:
             
                 c_sui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_UNSIGNED_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -777,9 +681,7 @@ public:
         
         *sui = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const int &variable) {
@@ -791,10 +693,8 @@ public:
             
                 c_int_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -802,9 +702,7 @@ public:
         
         *int_ = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const long int &variable) {
@@ -816,10 +714,8 @@ public:
             
                 c_li = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -827,9 +723,7 @@ public:
         
         *li = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::LONG_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const long long int &variable) {
@@ -841,10 +735,8 @@ public:
             
                 c_lli = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -852,9 +744,7 @@ public:
         
         *lli = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const unsigned int &variable) {
@@ -866,10 +756,8 @@ public:
             
                 c_ui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::UNSIGNED_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -877,9 +765,7 @@ public:
         
         *ui = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::UNSIGNED_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const long unsigned int &variable) {
@@ -891,10 +777,8 @@ public:
             
                 c_lui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -902,9 +786,7 @@ public:
         
         *lui = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void info(const std::string &message, const long long unsigned int &variable) {
@@ -916,10 +798,8 @@ public:
             
                 c_llui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -927,9 +807,7 @@ public:
         
         *llui = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
 
@@ -943,10 +821,8 @@ public:
             
                 c_float_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::FLOAT);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::FLOAT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -954,9 +830,7 @@ public:
         
         *float_ = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::FLOAT);
-        UNLOCK_
     }
     
 
@@ -970,10 +844,8 @@ public:
             
                 c_double_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::DOUBLE);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -981,9 +853,7 @@ public:
         
         *double_ = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::DOUBLE);
-        UNLOCK_
     }
     
     void info(const std::string &message, const long double &variable) {
@@ -995,10 +865,8 @@ public:
             
                 c_ld = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_DOUBLE);
                 const_write_log(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1006,9 +874,7 @@ public:
         
         *ld = variable;
         
-        LOCK_
         write_log(LEVEL::INFO, message, VAR_TYPE::LONG_DOUBLE);
-        UNLOCK_
     }
     
 
@@ -1019,9 +885,7 @@ public:
     
     void error(const std::string &message) {
     
-        LOCK_
         write_log(LEVEL::ERROR, message);
-        UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -1034,10 +898,8 @@ public:
             
                 c_bool_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::BOOL);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::BOOL);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1045,9 +907,7 @@ public:
         
         *bool_ = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::BOOL);
-        UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -1060,10 +920,8 @@ public:
             
                 c_wch = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::WCHAR_T);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1071,9 +929,7 @@ public:
         
         *wch = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::WCHAR_T);
-        UNLOCK_
     }
     
     void error(const std::string &message, const char &variable) {
@@ -1085,10 +941,8 @@ public:
             
                 c_char_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::CHAR);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::CHAR);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1096,9 +950,7 @@ public:
         
         *char_ = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::CHAR);
-        UNLOCK_
     }
     
 
@@ -1112,10 +964,8 @@ public:
             
                 c_si = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1123,9 +973,7 @@ public:
         
         *si = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const short unsigned int &variable) {
@@ -1137,10 +985,8 @@ public:
             
                 c_sui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_UNSIGNED_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1148,9 +994,7 @@ public:
         
         *sui = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const int &variable) {
@@ -1162,10 +1006,8 @@ public:
             
                 c_int_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1173,9 +1015,7 @@ public:
         
         *int_ = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const long int &variable) {
@@ -1187,10 +1027,8 @@ public:
             
                 c_li = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1198,9 +1036,7 @@ public:
         
         *li = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const long long int &variable) {
@@ -1212,10 +1048,8 @@ public:
             
                 c_lli = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1223,9 +1057,7 @@ public:
         
         *lli = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const unsigned int &variable) {
@@ -1237,10 +1069,8 @@ public:
             
                 c_ui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::UNSIGNED_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1248,9 +1078,7 @@ public:
         
         *ui = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::UNSIGNED_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const long unsigned int &variable) {
@@ -1262,10 +1090,8 @@ public:
             
                 c_lui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1273,9 +1099,7 @@ public:
         
         *lui = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void error(const std::string &message, const long long unsigned int &variable) {
@@ -1287,10 +1111,8 @@ public:
             
                 c_llui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1298,9 +1120,7 @@ public:
         
         *llui = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
 
@@ -1314,10 +1134,8 @@ public:
             
                 c_float_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::FLOAT);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1325,9 +1143,7 @@ public:
         
         *float_ = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::FLOAT);
-        UNLOCK_
     }
     
 
@@ -1342,10 +1158,8 @@ public:
             
                 c_double_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::DOUBLE);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1353,9 +1167,7 @@ public:
         
         *double_ = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::DOUBLE);
-        UNLOCK_
     }
     
     void error(const std::string &message, const long double &variable) {
@@ -1367,10 +1179,8 @@ public:
             
                 c_ld = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_DOUBLE);
                 const_write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1378,9 +1188,7 @@ public:
         
         *ld = variable;
         
-        LOCK_
         write_log(LEVEL::ERROR, message, VAR_TYPE::LONG_DOUBLE);
-        UNLOCK_
     }
     
 
@@ -1391,9 +1199,7 @@ public:
     
     void warning(const std::string &message) {
     
-        LOCK_
         write_log(LEVEL::WARNING, message);
-        UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -1406,10 +1212,8 @@ public:
             
                 c_bool_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::BOOL);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::BOOL);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1417,9 +1221,7 @@ public:
         
         *bool_ = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::BOOL);
-        UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -1432,10 +1234,8 @@ public:
             
                 c_wch = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::WCHAR_T);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1443,9 +1243,7 @@ public:
         
         *wch = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::WCHAR_T);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const char &variable) {
@@ -1457,10 +1255,8 @@ public:
             
                 c_char_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::CHAR);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::CHAR);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1468,9 +1264,7 @@ public:
         
         *char_ = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::CHAR);
-        UNLOCK_
     }
     
 
@@ -1484,10 +1278,8 @@ public:
             
                 c_si = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1495,9 +1287,7 @@ public:
         
         *si = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const short unsigned int &variable) {
@@ -1509,10 +1299,8 @@ public:
             
                 c_sui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_UNSIGNED_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1520,9 +1308,7 @@ public:
         
         *sui = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const int &variable) {
@@ -1534,10 +1320,8 @@ public:
             
                 c_int_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1545,9 +1329,7 @@ public:
         
         *int_ = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const long int &variable) {
@@ -1559,10 +1341,8 @@ public:
             
                 c_li = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1570,9 +1350,7 @@ public:
         
         *li = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const long long int &variable) {
@@ -1584,10 +1362,8 @@ public:
             
                 c_lli = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1595,9 +1371,7 @@ public:
         
         *lli = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const unsigned int &variable) {
@@ -1609,10 +1383,8 @@ public:
             
                 c_ui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::UNSIGNED_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1620,9 +1392,7 @@ public:
         
         *ui = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::UNSIGNED_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const long unsigned int &variable) {
@@ -1634,10 +1404,8 @@ public:
             
                 c_lui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1645,9 +1413,7 @@ public:
         
         *lui = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const long long unsigned int &variable) {
@@ -1659,10 +1425,8 @@ public:
             
                 c_llui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1670,9 +1434,7 @@ public:
         
         *llui = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
 
@@ -1686,10 +1448,8 @@ public:
             
                 c_float_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::FLOAT);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1697,9 +1457,7 @@ public:
         
         *float_ = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::FLOAT);
-        UNLOCK_
     }
     
 
@@ -1713,10 +1471,8 @@ public:
             
                 c_double_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::DOUBLE);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1724,9 +1480,7 @@ public:
         
         *double_ = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::DOUBLE);
-        UNLOCK_
     }
     
     void warning(const std::string &message, const long double &variable) {
@@ -1738,10 +1492,8 @@ public:
             
                 c_ld = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_DOUBLE);
                 const_write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1749,9 +1501,7 @@ public:
         
         *ld = variable;
         
-        LOCK_
         write_log(LEVEL::WARNING, message, VAR_TYPE::LONG_DOUBLE);
-        UNLOCK_
     }
     
 
@@ -1762,9 +1512,7 @@ public:
     
     void critical(const std::string &message) {
     
-        LOCK_
         write_log(LEVEL::CRITICAL, message);
-        UNLOCK_
     }
     
     /* ---------------------------------- BOOL ---------------------------------- */
@@ -1777,10 +1525,8 @@ public:
             
                 c_bool_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::BOOL);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1788,9 +1534,7 @@ public:
         
         *bool_ = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::BOOL);
-        UNLOCK_
     }
     
     /* ---------------------------------- CHAR ---------------------------------- */
@@ -1803,10 +1547,8 @@ public:
             
                 c_wch = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::WCHAR_T);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1814,9 +1556,7 @@ public:
         
         *wch = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::WCHAR_T);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const char &variable) {
@@ -1828,10 +1568,8 @@ public:
             
                 c_char_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::CHAR);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1839,9 +1577,7 @@ public:
         
         *char_ = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::CHAR);
-        UNLOCK_
     }
     
 
@@ -1855,10 +1591,8 @@ public:
             
                 c_si = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1866,9 +1600,7 @@ public:
         
         *si = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const short unsigned int &variable) {
@@ -1880,10 +1612,8 @@ public:
             
                 c_sui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::SHORT_UNSIGNED_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1891,9 +1621,7 @@ public:
         
         *sui = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::SHORT_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const int &variable) {
@@ -1905,10 +1633,8 @@ public:
             
                 c_int_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1916,9 +1642,7 @@ public:
         
         *int_ = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const long int &variable) {
@@ -1930,10 +1654,8 @@ public:
             
                 c_li = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1941,9 +1663,7 @@ public:
         
         *li = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const long long int &variable) {
@@ -1955,10 +1675,8 @@ public:
             
                 c_lli = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1966,9 +1684,7 @@ public:
         
         *lli = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const unsigned int &variable) {
@@ -1980,10 +1696,8 @@ public:
             
                 c_ui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::UNSIGNED_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -1991,9 +1705,7 @@ public:
         
         *ui = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::UNSIGNED_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const long unsigned int &variable) {
@@ -2005,10 +1717,8 @@ public:
             
                 c_lui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -2016,9 +1726,7 @@ public:
         
         *lui = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const long long unsigned int &variable) {
@@ -2030,10 +1738,8 @@ public:
             
                 c_llui = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_LONG_UNSIGNED_INT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -2041,9 +1747,7 @@ public:
         
         *llui = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_LONG_UNSIGNED_INT);
-        UNLOCK_
     }
     
 
@@ -2057,10 +1761,8 @@ public:
             
                 c_float_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::FLOAT);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -2068,9 +1770,7 @@ public:
         
         *float_ = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::FLOAT);
-        UNLOCK_
     }
     
  
@@ -2084,10 +1784,8 @@ public:
             
                 c_double_ = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::DOUBLE);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -2095,9 +1793,7 @@ public:
         
         *double_ = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::DOUBLE);
-        UNLOCK_
     }
     
     void critical(const std::string &message, const long double &variable) {
@@ -2109,10 +1805,8 @@ public:
             
                 c_ld = &variable;
                 
-                CONST_LOCK_
                 const_write_log(LEVEL::CRITICAL, "LOG BAD ALLOC (Not enough memory!)", VAR_TYPE::LONG_DOUBLE);
                 const_write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
-                CONST_UNLOCK_
                 
                 return;
             }
@@ -2120,9 +1814,7 @@ public:
         
         *ld = variable;
         
-        LOCK_
         write_log(LEVEL::CRITICAL, message, VAR_TYPE::LONG_DOUBLE);
-        UNLOCK_
     }
     
 
